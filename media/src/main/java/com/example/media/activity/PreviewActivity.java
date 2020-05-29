@@ -246,32 +246,6 @@ public class PreviewActivity extends BaseActivity {
         if (mOptions.isCompress && !mOptions.isShowVideo && !mOptions.isCrop) {
             final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
             final View inflate = LayoutInflater.from(PreviewActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
-            compressImage(mCheckMediaData, new CompressImageTask.OnImagesResult() {
-                @Override
-                public void startCompress() {
-                    viewGroup.addView(inflate);
-                }
-
-                @Override
-                public void resultFilesSucceed(List<File> list) {
-                    mCheckMediaData.clear();
-                    for (int i = 0; i < list.size(); i++) {
-                        mCheckMediaData.add(MediaSelectorFile.checkFileToThis(list.get(i)));
-                    }
-                    EventBus.getDefault().post(mCheckMediaData);
-                    finish();
-                    if (viewGroup.indexOfChild(inflate) != -1) {
-                        viewGroup.removeView(inflate);
-                    }
-                }
-
-                @Override
-                public void resultFilesError() {
-                    if (viewGroup.indexOfChild(inflate) != -1) {
-                        viewGroup.removeView(inflate);
-                    }
-                }
-            });
         } else {
             if (mOptions.isCrop && mOptions.maxChooseMedia == 1) {
                 if (!mCheckMediaData.get(0).isVideo) {

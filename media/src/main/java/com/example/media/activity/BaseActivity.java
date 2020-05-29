@@ -18,9 +18,6 @@ import utils.task.CompressImageTask;
 
 public abstract class BaseActivity extends PermissionActivity {
 
-    private @ColorRes
-    int mThemeColor = R.color.colorTheme;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,15 +51,6 @@ public abstract class BaseActivity extends PermissionActivity {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
-    }
-
-    protected void compressImage(List<MediaSelectorFile> mMediaFileData, CompressImageTask.OnImagesResult onImagesResult) {
-        final List<ImageConfig> configData = new ArrayList<>();
-        for (int i = 0; i < mMediaFileData.size(); i++) {
-            configData.add(MediaSelectorFile.thisToDefaultImageConfig(mMediaFileData.get(i)));
-        }
-
-        CompressImageTask.get().compressImages(this,configData, onImagesResult);
     }
 
 }
