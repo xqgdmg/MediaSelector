@@ -101,8 +101,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void toMediaFragmentActivity(View view) {
-        startActivity(new Intent(this, MediaFragmentActivity.class));
-
-    }
 }

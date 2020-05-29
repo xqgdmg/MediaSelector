@@ -58,12 +58,6 @@ public class PreviewActivity extends BaseActivity {
     private AnimatorSet mAnimatorSet;
     private MediaSelector.MediaOptions mOptions;
 
-
-    @Override
-    protected int getThemeColor() {
-        return mOptions.themeColor;
-    }
-
     @Override
     protected void initView() {
 
@@ -77,12 +71,6 @@ public class PreviewActivity extends BaseActivity {
         mRvCheckMedia.setLayoutManager(new LinearLayoutManager(this, LinearLayout.HORIZONTAL, false));
         mTvBottom = findViewById(R.id.ctv_bottom);
         mLlBottom = findViewById(R.id.ll_bottom);
-    }
-
-    @Override
-    protected void initInflate() {
-        super.initInflate();
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
     }
 
     @Override

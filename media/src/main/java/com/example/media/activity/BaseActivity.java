@@ -10,7 +10,6 @@ import android.view.WindowManager;
 import com.example.media.R;
 import com.example.media.bean.MediaSelectorFile;
 import com.example.media.permission.PermissionActivity;
-import com.example.media.resolver.ActivityManger;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,41 +29,15 @@ public abstract class BaseActivity extends PermissionActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initInflate();
         setContentView(getLayoutId());
         initPermission();
 
     }
 
-    protected void initInflate() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-    }
-
-
     protected void initPermission() {
-        ActivityManger.get().addActivity(this);
         initView();
         initData();
         initEvent();
-        initUI();
-    }
-
-    protected int getThemeColor() {
-        return mThemeColor;
-    }
-
-    protected void initUI() {
-        mSystemBarTintManager = new SystemBarTintManager(this);
-        mSystemBarTintManager.setStatusBarTintEnabled(true);
-        mSystemBarTintManager.setStatusBarTintColor(ContextCompat.getColor(this, getThemeColor()));
-    }
-
-    @Override
-    protected void onDestroy() {
-        ActivityManger.get().removeActivity(getClass().getSimpleName());
-        super.onDestroy();
     }
 
     protected abstract void initView();

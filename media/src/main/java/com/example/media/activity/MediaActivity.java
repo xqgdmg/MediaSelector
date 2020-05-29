@@ -73,11 +73,6 @@ public class MediaActivity extends BaseActivity {
 
     }
 
-    @Override
-    protected int getThemeColor() {
-        return mOptions.themeColor;
-    }
-
     private void requestExternalStoragePermission() {
         requestPermission(new OnPermissionsResult() {
             @Override
