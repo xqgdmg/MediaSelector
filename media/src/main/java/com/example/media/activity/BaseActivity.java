@@ -2,19 +2,11 @@ package com.example.media.activity;
 
 import android.os.Bundle;
 
-import com.example.media.R;
-import com.example.media.bean.MediaSelectorFile;
 import com.example.media.permission.PermissionActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.annotation.ColorRes;
 import androidx.annotation.Nullable;
-import utils.bean.ImageConfig;
-import utils.task.CompressImageTask;
 
 public abstract class BaseActivity extends PermissionActivity {
 

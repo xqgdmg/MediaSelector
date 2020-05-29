@@ -181,7 +181,6 @@ public class PermissionActivity extends AppCompatActivity {
             if (mPermissions != null && mPermissions.length > 0 && mOnPermissionsResult != null) {
                 requestPermission(mOnPermissionsResult, mPermissions);
                 dismissForbidPermissionDialog();
-                // getActivity().recreate();
             }
         }
     }

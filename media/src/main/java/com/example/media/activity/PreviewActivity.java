@@ -243,30 +243,25 @@ public class PreviewActivity extends BaseActivity {
     }
 
     private void sureData() {
-        if (mOptions.isCompress && !mOptions.isShowVideo && !mOptions.isCrop) {
-            final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
-            final View inflate = LayoutInflater.from(PreviewActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
-        } else {
-            if (mOptions.isCrop && mOptions.maxChooseMedia == 1) {
-                if (!mCheckMediaData.get(0).isVideo) {
-                    UCrop.Options options = new UCrop.Options();
-                    options.setCompressionQuality(100);
-                    options.setToolbarColor(ContextCompat.getColor(this, mOptions.themeColor));
-                    options.setStatusBarColor(ContextCompat.getColor(this, mOptions.themeColor));
-                    options.setLogoColor(ContextCompat.getColor(this, mOptions.themeColor));
-                    options.setActiveWidgetColor(ContextCompat.getColor(this, mOptions.themeColor));
-                    UCrop.of(Uri.fromFile(new File(mCheckMediaData.get(0).filePath)), Uri.fromFile(FileUtils.resultImageFile(this, "Crop")))
-                            .withAspectRatio(mOptions.scaleX, mOptions.scaleY)
-                            .withMaxResultSize(mOptions.cropWidth, mOptions.cropHeight)
-                            .withOptions(options)
-                            .start(this);
-                } else {
-                    Toasts.with().showToast(this, R.string.video_not_crop);
-                }
+        if (mOptions.isCrop && mOptions.maxChooseMedia == 1) {
+            if (!mCheckMediaData.get(0).isVideo) {
+                UCrop.Options options = new UCrop.Options();
+                options.setCompressionQuality(100);
+                options.setToolbarColor(ContextCompat.getColor(this, mOptions.themeColor));
+                options.setStatusBarColor(ContextCompat.getColor(this, mOptions.themeColor));
+                options.setLogoColor(ContextCompat.getColor(this, mOptions.themeColor));
+                options.setActiveWidgetColor(ContextCompat.getColor(this, mOptions.themeColor));
+                UCrop.of(Uri.fromFile(new File(mCheckMediaData.get(0).filePath)), Uri.fromFile(FileUtils.resultImageFile(this, "Crop")))
+                        .withAspectRatio(mOptions.scaleX, mOptions.scaleY)
+                        .withMaxResultSize(mOptions.cropWidth, mOptions.cropHeight)
+                        .withOptions(options)
+                        .start(this);
             } else {
-                EventBus.getDefault().post(mCheckMediaData);
-                finish();
+                Toasts.with().showToast(this, R.string.video_not_crop);
             }
+        } else {
+            EventBus.getDefault().post(mCheckMediaData);
+            finish();
         }
     }
 
