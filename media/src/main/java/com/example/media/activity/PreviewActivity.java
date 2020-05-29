@@ -309,13 +309,11 @@ public class PreviewActivity extends BaseActivity {
         }
         if (isShowTitleView) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            mSystemBarTintManager.setStatusBarTintEnabled(false);
             topAnimatorTranslation = ObjectAnimator.ofFloat(mTvTop, "translationY", 0, -(ScreenUtils.getStatuWindowsHeight(this) + mTvTop.getMeasuredHeight()));
             bottomAnimatorTranslation = ObjectAnimator.ofFloat(mLlBottom, "translationY", 0, (mLlBottom.getMeasuredHeight()));
 
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            mSystemBarTintManager.setStatusBarTintEnabled(true);
             topAnimatorTranslation = ObjectAnimator.ofFloat(mTvTop, "translationY", -(ScreenUtils.getStatuWindowsHeight(this) + mTvTop.getMeasuredHeight()), 0);
             bottomAnimatorTranslation = ObjectAnimator.ofFloat(mLlBottom, "translationY", (mLlBottom.getMeasuredHeight()), 0);
 
