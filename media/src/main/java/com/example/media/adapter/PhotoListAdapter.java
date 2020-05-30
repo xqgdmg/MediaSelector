@@ -24,7 +24,7 @@ import java.util.List;
 public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.ViewHolder> {
     private List<PhotoFile> mData;
     private Context mContext;
-    private PhotoSelector.MediaOptions mOptions;
+    private PhotoSelector.PhotoOptions mOptions;
 
     public void setOnCheckMediaListener(OnCheckMediaListener onCheckMediaListener) {
         this.onCheckMediaListener = onCheckMediaListener;
@@ -38,7 +38,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
 
     private OnRecyclerItemClickListener onRecyclerItemClickListener;
 
-    public PhotoListAdapter(@NonNull Context context, @NonNull List<PhotoFile> data, @NonNull PhotoSelector.MediaOptions options) {
+    public PhotoListAdapter(@NonNull Context context, @NonNull List<PhotoFile> data, @NonNull PhotoSelector.PhotoOptions options) {
         this.mContext = context;
         this.mData = data;
         this.mOptions = options;

@@ -36,13 +36,13 @@ public class MainActivity extends AppCompatActivity {
         iv_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PhotoSelector.MediaOptions mediaOptions = new PhotoSelector.MediaOptions();
-                mediaOptions.isShowCamera = true;
-                mediaOptions.isShowVideo = true;
-                mediaOptions.isCompress = true;
-                mediaOptions.maxChooseMedia = 1;
-                mediaOptions.isCrop = true;
-                PhotoSelector.with(MainActivity.this).setMediaOptions(mediaOptions).openPhotoListActivity();
+                PhotoSelector.PhotoOptions photoOptions = new PhotoSelector.PhotoOptions();
+                photoOptions.isShowCamera = true;
+                photoOptions.isShowVideo = true;
+                photoOptions.isCompress = true;
+                photoOptions.maxChooseMedia = 1;
+                photoOptions.isCrop = true;
+                PhotoSelector.with(MainActivity.this).setMediaOptions(photoOptions).openPhotoListActivity();
             }
         });
     }
@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
             List<PhotoFile> mediaList = PhotoSelector.resultMediaFile(data);
             if (mediaList != null && mediaList.size() > 0) {
                 GlideUtils.loadImage(MainActivity.this,mediaList.get(0).filePath,iv_add);
-
             }
         }
     }

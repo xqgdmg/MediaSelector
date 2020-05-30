@@ -52,7 +52,7 @@ public class PhotoListActivity extends PermissionActivity {
     private List<PhotoFolder> mPhotoFolderData;
     private FolderWindow mFolderWindow;
     private List<PhotoFile> mSelectPhotoList;//already choose
-    private PhotoSelector.MediaOptions mOptions;
+    private PhotoSelector.PhotoOptions mOptions;
     private File mCameraFile;
     private AlertDialog mCameraPermissionDialog;
     private TextView tv_back;

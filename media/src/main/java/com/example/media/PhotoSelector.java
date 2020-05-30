@@ -15,7 +15,7 @@ import java.lang.ref.SoftReference;
 import java.util.List;
 
 public class PhotoSelector {
-    private MediaOptions mMediaOptions = PhotoSelector.getDefaultOptions();
+    private PhotoOptions mPhotoOptions = PhotoSelector.getDefaultOptions();
     private SoftReference<Activity> mSoftActivity;
 
     private PhotoSelector(Activity activity) {
@@ -26,8 +26,8 @@ public class PhotoSelector {
         return new PhotoSelector(activity);
     }
 
-    public PhotoSelector setMediaOptions(@NonNull MediaOptions options) {
-        this.mMediaOptions = options;
+    public PhotoSelector setMediaOptions(@NonNull PhotoOptions options) {
+        this.mPhotoOptions = options;
         return this;
     }
 
@@ -35,7 +35,7 @@ public class PhotoSelector {
         if (mSoftActivity != null && mSoftActivity.get() != null) {
             Activity activity = mSoftActivity.get();
             Intent intent = new Intent(activity, PhotoListActivity.class);
-            intent.putExtra(Contast.KEY_OPEN_MEDIA, mMediaOptions);
+            intent.putExtra(Contast.KEY_OPEN_MEDIA, mPhotoOptions);
             activity.startActivityForResult(intent, Contast.CODE_REQUEST_PHOTO_LIST);
         }
     }
@@ -47,8 +47,8 @@ public class PhotoSelector {
     }
 
 
-    public static class MediaOptions implements Parcelable {
-        public MediaOptions() {
+    public static class PhotoOptions implements Parcelable {
+        public PhotoOptions() {
         }
 
         public int maxChooseMedia = Contast.MAX_CHOOSE_MEDIA;
@@ -64,7 +64,7 @@ public class PhotoSelector {
         public int cropHeight = 720;
 
 
-        protected MediaOptions(Parcel in) {
+        protected PhotoOptions(Parcel in) {
             maxChooseMedia = in.readInt();
             isCompress = in.readByte() != 0;
             isShowCamera = in.readByte() != 0;
@@ -77,15 +77,15 @@ public class PhotoSelector {
             cropHeight = in.readInt();
         }
 
-        public static final Creator<MediaOptions> CREATOR = new Creator<MediaOptions>() {
+        public static final Creator<PhotoOptions> CREATOR = new Creator<PhotoOptions>() {
             @Override
-            public MediaOptions createFromParcel(Parcel in) {
-                return new MediaOptions(in);
+            public PhotoOptions createFromParcel(Parcel in) {
+                return new PhotoOptions(in);
             }
 
             @Override
-            public MediaOptions[] newArray(int size) {
-                return new MediaOptions[size];
+            public PhotoOptions[] newArray(int size) {
+                return new PhotoOptions[size];
             }
         };
 
@@ -109,7 +109,7 @@ public class PhotoSelector {
         }
     }
 
-    public synchronized static MediaOptions getDefaultOptions() {
-        return new MediaOptions();
+    public synchronized static PhotoOptions getDefaultOptions() {
+        return new PhotoOptions();
     }
 }

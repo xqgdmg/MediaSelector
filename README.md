@@ -32,21 +32,21 @@ allprojects {
  /***
     *自定义选择图片方式
     */
- MediaSelector.MediaOptions mediaOptions = new MediaSelector.MediaOptions();
+ MediaSelector.MediaOptions photoOptions = new MediaSelector.MediaOptions();
  //是否要显示拍照功能
- mediaOptions.isShowCamera = true;
+ photoOptions.isShowCamera = true;
  //是否要压缩
- mediaOptions.isCompress = false;
+ photoOptions.isCompress = false;
  //是否要显示视频文件
- mediaOptions.isShowVideo = false;
+ photoOptions.isShowVideo = false;
  //设置module主题
- mediaOptions.themeColor = R.color.colorAccent;
+ photoOptions.themeColor = R.color.colorAccent;
  //设置要不要裁剪（视频不裁剪、单图选择接受裁剪，裁剪大小自己可以设置）
-  mediaOptions.isCrop = true;
+  photoOptions.isCrop = true;
  //Activity中
- MediaSelector.with(MainActivity.this).setMediaOptions(mediaOptions).openMediaActivity();
+ MediaSelector.with(MainActivity.this).setMediaOptions(photoOptions).openMediaActivity();
   //Fragment中
-  MediaSelector.with(MainFragment.this).setMediaOptions(mediaOptions).openMediaActivity();
+  MediaSelector.with(MainFragment.this).setMediaOptions(photoOptions).openMediaActivity();
 
  /***
     *默认选择图片方式
