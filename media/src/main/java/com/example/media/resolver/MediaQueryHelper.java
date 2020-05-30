@@ -11,8 +11,8 @@ import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.example.media.bean.MediaSelectorFile;
-import com.example.media.bean.SelectorFolderPhoto;
+import com.example.media.bean.PhotoFile;
+import com.example.media.bean.PhotoFolder;
 import com.example.media.utils.FileUtils;
 
 import java.util.ArrayList;
@@ -58,14 +58,14 @@ public class MediaQueryHelper {
         Cursor cursor = mActivity.getContentResolver().query(MediaQueryHelper.QUERY_URI, isShowVideo ? ALL_PROJECTION : MediaQueryHelper.IMAGE_PROJECTION, isShowVideo ? ALL_SELECTION_TYPE : MediaQueryHelper.IMAGE_SELECTION_TYPE, isShowVideo ? ALL_WHERE_TYPE : MediaQueryHelper.IMAGE_WHERE_TYPE, SORT_ORDER);
         if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
             //所有的图片
-            List<MediaSelectorFile> mAllFileData = new ArrayList<>();
+            List<PhotoFile> mAllFileData = new ArrayList<>();
 
             //所有文件夹
-            List<SelectorFolderPhoto> folderData = new ArrayList<>();
-            List<MediaSelectorFile> mVideoFileData = new ArrayList<>();
+            List<PhotoFolder> folderData = new ArrayList<>();
+            List<PhotoFile> mVideoFileData = new ArrayList<>();
 
             while (cursor.moveToNext()) {
-                MediaSelectorFile mediaFile = new MediaSelectorFile();
+                PhotoFile mediaFile = new PhotoFile();
                 mediaFile.fileName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME));
 
                 mediaFile.filePath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA));
@@ -93,7 +93,7 @@ public class MediaQueryHelper {
                     mVideoFileData.add(mediaFile);
                 }
 
-                SelectorFolderPhoto mediaFolder = new SelectorFolderPhoto();
+                PhotoFolder mediaFolder = new PhotoFolder();
                 mediaFolder.folderPath = mediaFile.folderPath;
                 //首先判断该文件的父文件夹有没有在集合中？有的话直接把文件加入对应的文件夹：没有就新建一个文件夹再添加进去
                 if (folderData.size() > 0 && folderData.contains(mediaFolder) && folderData.indexOf(mediaFolder) >= 0) {
@@ -110,12 +110,12 @@ public class MediaQueryHelper {
             cursor.close();
             if (mAllFileData.size() > 0) {
                 if (isShowCamera) {
-                    MediaSelectorFile cameraMediaFile = new MediaSelectorFile();
+                    PhotoFile cameraMediaFile = new PhotoFile();
                     cameraMediaFile.isShowCamera = true;
                     mAllFileData.add(0, cameraMediaFile);
                 }
 
-                SelectorFolderPhoto allMediaFolder = new SelectorFolderPhoto();
+                PhotoFolder allMediaFolder = new PhotoFolder();
                 allMediaFolder.folderPath = Contast.ALL_FILE;
                 allMediaFolder.folderName = Contast.ALL_FILE;
                 allMediaFolder.firstFilePath = isShowCamera ? mAllFileData.get(1).filePath : mAllFileData.get(0).filePath;
@@ -124,7 +124,7 @@ public class MediaQueryHelper {
                 folderData.add(0, allMediaFolder);
                 //增加视频目录
                 if (mVideoFileData.size() > 0) {
-                    SelectorFolderPhoto videoMediaFolder = new SelectorFolderPhoto();
+                    PhotoFolder videoMediaFolder = new PhotoFolder();
                     videoMediaFolder.folderPath = Contast.ALL_VIDEO;
                     videoMediaFolder.folderName = Contast.ALL_VIDEO;
                     videoMediaFolder.firstFilePath = mVideoFileData.get(0).filePath;

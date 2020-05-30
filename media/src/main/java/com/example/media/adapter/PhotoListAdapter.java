@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.example.media.PhotoSelector;
 import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.R;
-import com.example.media.bean.MediaSelectorFile;
+import com.example.media.bean.PhotoFile;
 import com.example.media.utils.DateUtils;
 import com.example.media.utils.GlideUtils;
 import com.example.media.utils.ScreenUtils;
@@ -22,7 +22,7 @@ import com.example.media.utils.ScreenUtils;
 import java.util.List;
 
 public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.ViewHolder> {
-    private List<MediaSelectorFile> mData;
+    private List<PhotoFile> mData;
     private Context mContext;
     private PhotoSelector.MediaOptions mOptions;
 
@@ -38,7 +38,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
 
     private OnRecyclerItemClickListener onRecyclerItemClickListener;
 
-    public PhotoListAdapter(@NonNull Context context, @NonNull List<MediaSelectorFile> data, @NonNull PhotoSelector.MediaOptions options) {
+    public PhotoListAdapter(@NonNull Context context, @NonNull List<PhotoFile> data, @NonNull PhotoSelector.MediaOptions options) {
         this.mContext = context;
         this.mData = data;
         this.mOptions = options;

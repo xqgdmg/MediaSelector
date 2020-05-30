@@ -12,13 +12,13 @@ import android.widget.TextView;
 
 import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.R;
-import com.example.media.bean.SelectorFolderPhoto;
+import com.example.media.bean.PhotoFolder;
 import com.example.media.utils.GlideUtils;
 
 import java.util.List;
 
-public class MediaFolderAdapter extends RecyclerView.Adapter<MediaFolderAdapter.ViewHolder> {
-    private List<SelectorFolderPhoto> mData;
+public class PhotoFolderAdapter extends RecyclerView.Adapter<PhotoFolderAdapter.ViewHolder> {
+    private List<PhotoFolder> mData;
 
     public void setOnRecyclerItemClickListener(OnRecyclerItemClickListener onRecyclerItemClickListener) {
         this.onRecyclerItemClickListener = onRecyclerItemClickListener;
@@ -26,7 +26,7 @@ public class MediaFolderAdapter extends RecyclerView.Adapter<MediaFolderAdapter.
 
     private OnRecyclerItemClickListener onRecyclerItemClickListener;
 
-    public MediaFolderAdapter(@Nullable List<SelectorFolderPhoto> data) {
+    public PhotoFolderAdapter(@Nullable List<PhotoFolder> data) {
         this.mData = data;
     }
 
@@ -86,7 +86,7 @@ public class MediaFolderAdapter extends RecyclerView.Adapter<MediaFolderAdapter.
         }
     }
 
-    private void clickCheckSoleData(List<SelectorFolderPhoto> data, int position) {
+    private void clickCheckSoleData(List<PhotoFolder> data, int position) {
         if (data != null && data.size() > position) {
             if (!data.get(position).isCheck) {
                 for (int i = 0; i < data.size(); i++) {

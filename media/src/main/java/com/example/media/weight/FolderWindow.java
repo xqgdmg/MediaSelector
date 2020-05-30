@@ -20,8 +20,8 @@ import android.widget.PopupWindow;
 
 import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.R;
-import com.example.media.adapter.MediaFolderAdapter;
-import com.example.media.bean.SelectorFolderPhoto;
+import com.example.media.adapter.PhotoFolderAdapter;
+import com.example.media.bean.PhotoFolder;
 import com.example.media.resolver.Contast;
 import com.example.media.utils.ScreenUtils;
 
@@ -29,9 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FolderWindow {
-    private List<SelectorFolderPhoto> mFolderData;
+    private List<PhotoFolder> mFolderData;
     private PopupWindow mPopupWindow;
-    private MediaFolderAdapter mFolderAdapter;
+    private PhotoFolderAdapter mFolderAdapter;
     private Context mContext;
     private View mViewRoot;
     private View mShowView;
@@ -42,7 +42,7 @@ public class FolderWindow {
 
     private OnPopupItemClickListener onPopupItemClickListener;
 
-    public FolderWindow(@NonNull Context context, @Nullable List<SelectorFolderPhoto> folderData) {
+    public FolderWindow(@NonNull Context context, @Nullable List<PhotoFolder> folderData) {
         if (folderData == null) {
             folderData = new ArrayList<>();
         }
@@ -89,7 +89,7 @@ public class FolderWindow {
             RecyclerView mRvFolder = inflateView.findViewById(R.id.rv_folder);
             mViewRoot = inflateView.findViewById(R.id.ll_root);
             mRvFolder.setLayoutManager(new LinearLayoutManager(mContext));
-            mFolderAdapter = new MediaFolderAdapter(mFolderData);
+            mFolderAdapter = new PhotoFolderAdapter(mFolderData);
             mRvFolder.setItemAnimator(new DefaultItemAnimator());
             mRvFolder.setAdapter(mFolderAdapter);
             mPopupWindow.setContentView(inflateView);

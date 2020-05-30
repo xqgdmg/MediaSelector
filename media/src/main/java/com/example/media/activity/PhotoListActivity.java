@@ -25,8 +25,8 @@ import com.example.media.PhotoSelector;
 import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.R;
 import com.example.media.adapter.PhotoListAdapter;
-import com.example.media.bean.MediaSelectorFile;
-import com.example.media.bean.SelectorFolderPhoto;
+import com.example.media.bean.PhotoFile;
+import com.example.media.bean.PhotoFolder;
 import com.example.media.permission.PermissionActivity;
 import com.example.media.permission.imp.OnPermissionsResult;
 import com.example.media.resolver.Contast;
@@ -48,10 +48,10 @@ public class PhotoListActivity extends PermissionActivity {
 
     private RecyclerView mRecyclerView;
     private PhotoListAdapter mPhotoListAdapter;
-    private List<MediaSelectorFile> mAdapterList;
-    private List<SelectorFolderPhoto> mPhotoFolderData;
+    private List<PhotoFile> mAdapterList;
+    private List<PhotoFolder> mPhotoFolderData;
     private FolderWindow mFolderWindow;
-    private List<MediaSelectorFile> mSelectPhotoList;//already choose
+    private List<PhotoFile> mSelectPhotoList;//already choose
     private PhotoSelector.MediaOptions mOptions;
     private File mCameraFile;
     private AlertDialog mCameraPermissionDialog;
@@ -155,7 +155,7 @@ public class PhotoListActivity extends PermissionActivity {
         }
         mediaQueryHelper.loadMedia(mOptions.isShowCamera, mOptions.isShowVideo, new ILoadMediaResult() {
             @Override
-            public void mediaResult(List<SelectorFolderPhoto> data) {
+            public void mediaResult(List<PhotoFolder> data) {
                 if (data != null && data.size() > 0) {
                     mAdapterList.addAll(data.get(0).fileData);//all photo
                     mPhotoListAdapter.notifyDataSetChanged();
@@ -301,7 +301,7 @@ public class PhotoListActivity extends PermissionActivity {
         }, Manifest.permission.CAMERA);
     }
 
-    private void toCrop(int position, @NonNull List<MediaSelectorFile> data) {
+    private void toCrop(int position, @NonNull List<PhotoFile> data) {
 
         if (mSelectPhotoList.size() <= 0) {
             data.get(position).isCheck = true;
@@ -377,9 +377,9 @@ public class PhotoListActivity extends PermissionActivity {
                 if (requestCode == Contast.REQUEST_CAMERA_CODE) {
                     if (FileUtils.existsFile(mCameraFile.getAbsolutePath())) {
                         FileUtils.scanImage(this, mCameraFile);
-                        MediaSelectorFile mediaSelectorFile = MediaSelectorFile.checkFileToThis(mCameraFile);
-                        if (mediaSelectorFile.hasData()) {
-                            mSelectPhotoList.add(mediaSelectorFile);
+                        PhotoFile photoFile = PhotoFile.checkFileToThis(mCameraFile);
+                        if (photoFile.hasData()) {
+                            mSelectPhotoList.add(photoFile);
                         }
                         resultMediaData();
                     }
@@ -393,7 +393,7 @@ public class PhotoListActivity extends PermissionActivity {
                         mSelectPhotoList.clear();
                         File file = new File(resultUri.getPath());
                         if (FileUtils.existsFile(file.getAbsolutePath())) {
-                            mSelectPhotoList.add(MediaSelectorFile.checkFileToThis(file));
+                            mSelectPhotoList.add(PhotoFile.checkFileToThis(file));
                             resultIntent();
                             finish();
                         } else {

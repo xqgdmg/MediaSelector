@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.media.PhotoSelector;
-import com.example.media.bean.MediaSelectorFile;
+import com.example.media.bean.PhotoFile;
 import com.example.media.resolver.Contast;
 import com.example.media.utils.GlideUtils;
 
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Contast.CODE_RESULT_PHOTO_LIST && requestCode == Contast.CODE_REQUEST_PHOTO_LIST) {
-            List<MediaSelectorFile> mediaList = PhotoSelector.resultMediaFile(data);
+            List<PhotoFile> mediaList = PhotoSelector.resultMediaFile(data);
             if (mediaList != null && mediaList.size() > 0) {
                 GlideUtils.loadImage(MainActivity.this,mediaList.get(0).filePath,iv_add);
 

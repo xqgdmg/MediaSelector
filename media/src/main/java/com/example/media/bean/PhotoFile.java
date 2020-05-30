@@ -9,9 +9,7 @@ import com.example.media.utils.FileUtils;
 
 import java.io.File;
 
-import utils.bean.ImageConfig;
-
-public class MediaSelectorFile implements Parcelable {
+public class PhotoFile implements Parcelable {
     public String fileName;
     public String filePath;
     public int fileSize;
@@ -24,10 +22,10 @@ public class MediaSelectorFile implements Parcelable {
     public boolean isVideo;
     public long videoDuration;
 
-    public MediaSelectorFile() {
+    public PhotoFile() {
     }
 
-    protected MediaSelectorFile(Parcel in) {
+    protected PhotoFile(Parcel in) {
         fileName = in.readString();
         filePath = in.readString();
         fileSize = in.readInt();
@@ -41,15 +39,15 @@ public class MediaSelectorFile implements Parcelable {
         videoDuration = in.readLong();
     }
 
-    public static final Creator<MediaSelectorFile> CREATOR = new Creator<MediaSelectorFile>() {
+    public static final Creator<PhotoFile> CREATOR = new Creator<PhotoFile>() {
         @Override
-        public MediaSelectorFile createFromParcel(Parcel in) {
-            return new MediaSelectorFile(in);
+        public PhotoFile createFromParcel(Parcel in) {
+            return new PhotoFile(in);
         }
 
         @Override
-        public MediaSelectorFile[] newArray(int size) {
-            return new MediaSelectorFile[size];
+        public PhotoFile[] newArray(int size) {
+            return new PhotoFile[size];
         }
     };
 
@@ -75,10 +73,10 @@ public class MediaSelectorFile implements Parcelable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj != null && obj instanceof MediaSelectorFile) {
-            MediaSelectorFile mediaSelectorFile = (MediaSelectorFile) obj;
-            if (mediaSelectorFile.filePath != null && this.filePath != null &&
-                    mediaSelectorFile.filePath.equals(filePath)) {
+        if (obj != null && obj instanceof PhotoFile) {
+            PhotoFile photoFile = (PhotoFile) obj;
+            if (photoFile.filePath != null && this.filePath != null &&
+                    photoFile.filePath.equals(filePath)) {
                 return true;
             }
         }
@@ -94,8 +92,8 @@ public class MediaSelectorFile implements Parcelable {
                 && !TextUtils.isEmpty(folderPath) && TextUtils.getTrimmedLength(folderPath) > 0;
     }
 
-    public static MediaSelectorFile checkFileToThis(@NonNull File file) {
-        MediaSelectorFile mediaFile = new MediaSelectorFile();
+    public static PhotoFile checkFileToThis(@NonNull File file) {
+        PhotoFile mediaFile = new PhotoFile();
         mediaFile.fileName = file.getName();
         mediaFile.filePath = file.getAbsolutePath();
         mediaFile.fileSize = (int) file.length();

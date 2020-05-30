@@ -8,7 +8,7 @@ import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 
 import com.example.media.activity.PhotoListActivity;
-import com.example.media.bean.MediaSelectorFile;
+import com.example.media.bean.PhotoFile;
 import com.example.media.resolver.Contast;
 
 import java.lang.ref.SoftReference;
@@ -40,7 +40,7 @@ public class PhotoSelector {
         }
     }
 
-    public static List<MediaSelectorFile> resultMediaFile(Intent data) {
+    public static List<PhotoFile> resultMediaFile(Intent data) {
         if (data == null)
             return null;
         return data.getParcelableArrayListExtra(Contast.KEY_REQUEST_PHOTO_DATA);
