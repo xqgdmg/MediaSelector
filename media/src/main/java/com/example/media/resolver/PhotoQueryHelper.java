@@ -55,7 +55,10 @@ public class PhotoQueryHelper {
 
     public void loadMedia(boolean isShowCamera, boolean isShowVideo, @Nullable ILoadMediaResult onResult) {
 
-        Cursor cursor = mActivity.getContentResolver().query(PhotoQueryHelper.QUERY_URI, isShowVideo ? ALL_PROJECTION : PhotoQueryHelper.IMAGE_PROJECTION, isShowVideo ? ALL_SELECTION_TYPE : PhotoQueryHelper.IMAGE_SELECTION_TYPE, isShowVideo ? ALL_WHERE_TYPE : PhotoQueryHelper.IMAGE_WHERE_TYPE, SORT_ORDER);
+        Cursor cursor = mActivity.getContentResolver().query(PhotoQueryHelper.QUERY_URI,
+                isShowVideo ? ALL_PROJECTION : PhotoQueryHelper.IMAGE_PROJECTION,
+                isShowVideo ? ALL_SELECTION_TYPE : PhotoQueryHelper.IMAGE_SELECTION_TYPE,
+                isShowVideo ? ALL_WHERE_TYPE : PhotoQueryHelper.IMAGE_WHERE_TYPE, SORT_ORDER);
         if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
             //所有的图片
             List<PhotoFile> mAllFileData = new ArrayList<>();
@@ -69,8 +72,11 @@ public class PhotoQueryHelper {
                 mediaFile.fileName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME));
 
                 mediaFile.filePath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA));
-                if (TextUtils.isEmpty(mediaFile.fileName) || TextUtils.isEmpty(mediaFile.filePath)
-                        || TextUtils.getTrimmedLength(mediaFile.fileName) == 0 || TextUtils.getTrimmedLength(mediaFile.filePath) == 0 || mediaFile.fileName.endsWith(".gif")) {
+                if (TextUtils.isEmpty(mediaFile.fileName)
+                        || TextUtils.isEmpty(mediaFile.filePath)
+                        || TextUtils.getTrimmedLength(mediaFile.fileName) == 0
+                        || TextUtils.getTrimmedLength(mediaFile.filePath) == 0
+                        || mediaFile.fileName.endsWith(".gif")) {
                     continue;
                 }
                 mediaFile.fileSize = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE));
@@ -84,7 +90,8 @@ public class PhotoQueryHelper {
                 } else {
                     continue;
                 }
-                mediaFile.isVideo = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE)) == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+                mediaFile.isVideo = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE))
+                        == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
                 if (mediaFile.isVideo) {
                     mediaFile.videoDuration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
                     if (mediaFile.videoDuration >= 60 * 60 * 1000 || mediaFile.videoDuration < 1000) {
