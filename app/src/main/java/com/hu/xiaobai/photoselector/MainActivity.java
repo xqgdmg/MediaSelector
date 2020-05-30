@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.example.media.MediaSelector;
 import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.bean.MediaSelectorFile;
 import com.example.media.resolver.Contast;
+import com.example.media.utils.GlideUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +23,8 @@ import java.util.ListIterator;
 public class MainActivity extends AppCompatActivity {
 
 
-    private DataAdapter mDataAdapter;
-    private RecyclerView mRyMedia;
-    private List<MediaSelectorFile> mData;
+//    private List<MediaSelectorFile> mData;
+    private ImageView iv_add;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,48 +38,30 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initData() {
-        mData = new ArrayList<>();
-        MediaSelectorFile mediaSelectorFile = new MediaSelectorFile();
-        mData.add(mediaSelectorFile);
-        mDataAdapter = new DataAdapter(this, mData);
-        mRyMedia.setAdapter(mDataAdapter);
     }
 
     private void initView() {
-        mRyMedia = findViewById(R.id.rv_media);
-        mRyMedia.setLayoutManager(new GridLayoutManager(this, 3));
+        iv_add = findViewById(R.id.iv_add);
 
     }
 
     private void initEvent() {
-        mDataAdapter.setOnRecyclerItemClickListener(new OnRecyclerItemClickListener() {
+        iv_add.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void itemClick(@NonNull View view, int position) {
-                if (!mData.get(position).isCheck) {
-                    if (mData.size() > 1) {
-                        ListIterator<MediaSelectorFile> iterator = mData.listIterator();
-                        while (iterator.hasNext()) {
-                            if (iterator.next().isCheck) {
-                                iterator.remove();
-                            }
-                        }
-                        mDataAdapter.notifyDataSetChanged();
-                    }
-                    MediaSelector.MediaOptions mediaOptions = new MediaSelector.MediaOptions();
-                    mediaOptions.isShowCamera = true;
-                    mediaOptions.isShowVideo = true;
-                    mediaOptions.isCompress = true;
-                    mediaOptions.maxChooseMedia = 1;
-                    mediaOptions.isCrop = true;
-                    MediaSelector.with(MainActivity.this).setMediaOptions(mediaOptions).openMediaActivity();
-
-                }
+            public void onClick(View view) {
+                MediaSelector.MediaOptions mediaOptions = new MediaSelector.MediaOptions();
+                mediaOptions.isShowCamera = true;
+                mediaOptions.isShowVideo = true;
+                mediaOptions.isCompress = true;
+                mediaOptions.maxChooseMedia = 1;
+                mediaOptions.isCrop = true;
+                MediaSelector.with(MainActivity.this).setMediaOptions(mediaOptions).openMediaActivity();
             }
         });
     }
 
     /**
-     * 选择图片结果回调
+     * 已选择图片结果回调
      *
      * @param requestCode
      * @param resultCode
@@ -91,11 +74,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == Contast.CODE_RESULT_MEDIA && requestCode == Contast.CODE_REQUEST_MEDIA) {
             List<MediaSelectorFile> mediaList = MediaSelector.resultMediaFile(data);
             if (mediaList != null && mediaList.size() > 0) {
-                mData.addAll(0, mediaList);
-                mDataAdapter.notifyDataSetChanged();
-                for (int i = 0; i < mediaList.size(); i++) {
-                    Log.w("onActivityResult----", mediaList.get(i).filePath + mediaList.get(i).folderPath);
-                }
+                GlideUtils.loadImage(MainActivity.this,mediaList.get(0).filePath,iv_add);
 
             }
         }
