@@ -8,7 +8,7 @@ import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.media.activity.MediaActivity;
+import com.example.media.activity.PhotoListActivity;
 import com.example.media.bean.MediaSelectorFile;
 import com.example.media.resolver.Contast;
 
@@ -44,12 +44,12 @@ public class MediaSelector {
     public void openMediaActivity() {
         if (mSoftActivity != null && mSoftActivity.get() != null) {
             Activity activity = mSoftActivity.get();
-            Intent intent = new Intent(activity, MediaActivity.class);
+            Intent intent = new Intent(activity, PhotoListActivity.class);
             intent.putExtra(Contast.KEY_OPEN_MEDIA, mMediaOptions);
             activity.startActivityForResult(intent, Contast.CODE_REQUEST_MEDIA);
         } else if (mSoftFragment != null && mSoftFragment.get() != null) {
             Fragment fragment = mSoftFragment.get();
-            Intent intent = new Intent(fragment.getContext(), MediaActivity.class);
+            Intent intent = new Intent(fragment.getContext(), PhotoListActivity.class);
             intent.putExtra(Contast.KEY_OPEN_MEDIA, mMediaOptions);
             fragment.startActivityForResult(intent, Contast.CODE_REQUEST_MEDIA);
         }

@@ -21,7 +21,7 @@ import android.widget.PopupWindow;
 import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.R;
 import com.example.media.adapter.MediaFolderAdapter;
-import com.example.media.bean.MediaSelectorFolder;
+import com.example.media.bean.SelectorFolderPhoto;
 import com.example.media.resolver.Contast;
 import com.example.media.utils.ScreenUtils;
 
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FolderWindow {
-    private List<MediaSelectorFolder> mFolderData;
+    private List<SelectorFolderPhoto> mFolderData;
     private PopupWindow mPopupWindow;
     private MediaFolderAdapter mFolderAdapter;
     private Context mContext;
@@ -42,7 +42,7 @@ public class FolderWindow {
 
     private OnPopupItemClickListener onPopupItemClickListener;
 
-    public FolderWindow(@NonNull Context context, @Nullable List<MediaSelectorFolder> folderData) {
+    public FolderWindow(@NonNull Context context, @Nullable List<SelectorFolderPhoto> folderData) {
         if (folderData == null) {
             folderData = new ArrayList<>();
         }

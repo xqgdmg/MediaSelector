@@ -12,13 +12,13 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.example.media.bean.MediaSelectorFile;
-import com.example.media.bean.MediaSelectorFolder;
+import com.example.media.bean.SelectorFolderPhoto;
 import com.example.media.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediaHelper {
+public class MediaQueryHelper {
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     //查询的内容
     @SuppressLint("InlinedApi")
@@ -48,20 +48,20 @@ public class MediaHelper {
     private static final String SORT_ORDER = MediaStore.Files.FileColumns.DATE_MODIFIED + " desc";
     private Activity mActivity;
 
-    public MediaHelper(@NonNull Activity activity) {
+    public MediaQueryHelper(@NonNull Activity activity) {
         this.mActivity = activity;
     }
 
 
     public void loadMedia(boolean isShowCamera, boolean isShowVideo, @Nullable ILoadMediaResult onResult) {
 
-        Cursor cursor = mActivity.getContentResolver().query(MediaHelper.QUERY_URI, isShowVideo ? ALL_PROJECTION : MediaHelper.IMAGE_PROJECTION, isShowVideo ? ALL_SELECTION_TYPE : MediaHelper.IMAGE_SELECTION_TYPE, isShowVideo ? ALL_WHERE_TYPE : MediaHelper.IMAGE_WHERE_TYPE, SORT_ORDER);
+        Cursor cursor = mActivity.getContentResolver().query(MediaQueryHelper.QUERY_URI, isShowVideo ? ALL_PROJECTION : MediaQueryHelper.IMAGE_PROJECTION, isShowVideo ? ALL_SELECTION_TYPE : MediaQueryHelper.IMAGE_SELECTION_TYPE, isShowVideo ? ALL_WHERE_TYPE : MediaQueryHelper.IMAGE_WHERE_TYPE, SORT_ORDER);
         if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
             //所有的图片
             List<MediaSelectorFile> mAllFileData = new ArrayList<>();
 
             //所有文件夹
-            List<MediaSelectorFolder> folderData = new ArrayList<>();
+            List<SelectorFolderPhoto> folderData = new ArrayList<>();
             List<MediaSelectorFile> mVideoFileData = new ArrayList<>();
 
             while (cursor.moveToNext()) {
@@ -93,7 +93,7 @@ public class MediaHelper {
                     mVideoFileData.add(mediaFile);
                 }
 
-                MediaSelectorFolder mediaFolder = new MediaSelectorFolder();
+                SelectorFolderPhoto mediaFolder = new SelectorFolderPhoto();
                 mediaFolder.folderPath = mediaFile.folderPath;
                 //首先判断该文件的父文件夹有没有在集合中？有的话直接把文件加入对应的文件夹：没有就新建一个文件夹再添加进去
                 if (folderData.size() > 0 && folderData.contains(mediaFolder) && folderData.indexOf(mediaFolder) >= 0) {
@@ -115,7 +115,7 @@ public class MediaHelper {
                     mAllFileData.add(0, cameraMediaFile);
                 }
 
-                MediaSelectorFolder allMediaFolder = new MediaSelectorFolder();
+                SelectorFolderPhoto allMediaFolder = new SelectorFolderPhoto();
                 allMediaFolder.folderPath = Contast.ALL_FILE;
                 allMediaFolder.folderName = Contast.ALL_FILE;
                 allMediaFolder.firstFilePath = isShowCamera ? mAllFileData.get(1).filePath : mAllFileData.get(0).filePath;
@@ -124,7 +124,7 @@ public class MediaHelper {
                 folderData.add(0, allMediaFolder);
                 //增加视频目录
                 if (mVideoFileData.size() > 0) {
-                    MediaSelectorFolder videoMediaFolder = new MediaSelectorFolder();
+                    SelectorFolderPhoto videoMediaFolder = new SelectorFolderPhoto();
                     videoMediaFolder.folderPath = Contast.ALL_VIDEO;
                     videoMediaFolder.folderName = Contast.ALL_VIDEO;
                     videoMediaFolder.firstFilePath = mVideoFileData.get(0).filePath;

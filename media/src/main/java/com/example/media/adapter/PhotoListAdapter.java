@@ -2,7 +2,6 @@ package com.example.media.adapter;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -22,7 +21,7 @@ import com.example.media.utils.ScreenUtils;
 
 import java.util.List;
 
-public class MediaFileAdapter extends RecyclerView.Adapter<MediaFileAdapter.ViewHolder> {
+public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.ViewHolder> {
     private List<MediaSelectorFile> mData;
     private Context mContext;
     private MediaSelector.MediaOptions mOptions;
@@ -39,7 +38,7 @@ public class MediaFileAdapter extends RecyclerView.Adapter<MediaFileAdapter.View
 
     private OnRecyclerItemClickListener onRecyclerItemClickListener;
 
-    public MediaFileAdapter(@NonNull Context context, @NonNull List<MediaSelectorFile> data, @NonNull MediaSelector.MediaOptions options) {
+    public PhotoListAdapter(@NonNull Context context, @NonNull List<MediaSelectorFile> data, @NonNull MediaSelector.MediaOptions options) {
         this.mContext = context;
         this.mData = data;
         this.mOptions = options;
@@ -48,12 +47,12 @@ public class MediaFileAdapter extends RecyclerView.Adapter<MediaFileAdapter.View
 
     @NonNull
     @Override
-    public MediaFileAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public PhotoListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         return new ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_media_file_view, viewGroup, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MediaFileAdapter.ViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(@NonNull PhotoListAdapter.ViewHolder viewHolder, final int i) {
         ViewGroup.LayoutParams layoutParams = viewHolder.mIvData.getLayoutParams();
         if (mData.get(i).isShowCamera) {
             layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -125,7 +124,7 @@ public class MediaFileAdapter extends RecyclerView.Adapter<MediaFileAdapter.View
             mViewLay = itemView.findViewById(R.id.view_lay);
             mRlVideo = itemView.findViewById(R.id.rl_video);
             mTvDuration = itemView.findViewById(R.id.tv_duration);
-            MediaFileAdapter.setRootGroupParams(mRootGroup);
+            PhotoListAdapter.setRootGroupParams(mRootGroup);
         }
     }
 

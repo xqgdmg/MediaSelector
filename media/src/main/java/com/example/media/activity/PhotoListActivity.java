@@ -11,7 +11,6 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,14 +25,14 @@ import com.bumptech.glide.Glide;
 import com.example.media.MediaSelector;
 import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.R;
-import com.example.media.adapter.MediaFileAdapter;
+import com.example.media.adapter.PhotoListAdapter;
 import com.example.media.bean.MediaSelectorFile;
-import com.example.media.bean.MediaSelectorFolder;
+import com.example.media.bean.SelectorFolderPhoto;
 import com.example.media.permission.PermissionActivity;
 import com.example.media.permission.imp.OnPermissionsResult;
 import com.example.media.resolver.Contast;
 import com.example.media.resolver.ILoadMediaResult;
-import com.example.media.resolver.MediaHelper;
+import com.example.media.resolver.MediaQueryHelper;
 import com.example.media.utils.FileUtils;
 import com.example.media.weight.DialogHelper;
 import com.example.media.weight.FolderWindow;
@@ -47,14 +46,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediaActivity extends PermissionActivity {
+public class PhotoListActivity extends PermissionActivity {
 
     private RecyclerView mRecyclerView;
-    private MediaFileAdapter mMediaFileAdapter;
-    private List<MediaSelectorFile> mMediaFileData;
-    private List<MediaSelectorFolder> mMediaFolderData;
+    private PhotoListAdapter mPhotoListAdapter;
+    private List<MediaSelectorFile> mAdapterList;
+    private List<SelectorFolderPhoto> mMediaFolderData;
     private FolderWindow mFolderWindow;
-    private List<MediaSelectorFile> mCheckMediaFileData;//already choose
+    private List<MediaSelectorFile> mSelectPhotoList;//already choose
     private MediaSelector.MediaOptions mOptions;
     private File mCameraFile;
     private AlertDialog mCameraPermissionDialog;
@@ -64,7 +63,7 @@ public class MediaActivity extends PermissionActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_media);
+        setContentView(R.layout.activity_photo_list);
         requestExternalStoragePermission();
     }
 
@@ -84,7 +83,7 @@ public class MediaActivity extends PermissionActivity {
 
             @Override
             public void onNoAllow(List<String> list) {
-                AlertDialog dialog = DialogHelper.with().createDialog(MediaActivity.this, getString(R.string.hint), getString(R.string.what_permission_is_must, getString(R.string.memory_card)),
+                AlertDialog dialog = DialogHelper.with().createDialog(PhotoListActivity.this, getString(R.string.hint), getString(R.string.what_permission_is_must, getString(R.string.memory_card)),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -101,7 +100,7 @@ public class MediaActivity extends PermissionActivity {
 
             @Override
             public void onForbid(List<String> list) {
-                Toast.makeText(MediaActivity.this,"permission deny",Toast.LENGTH_SHORT).show();
+                Toast.makeText(PhotoListActivity.this,"permission deny",Toast.LENGTH_SHORT).show();
             }
         }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
@@ -155,25 +154,27 @@ public class MediaActivity extends PermissionActivity {
 
     protected void initData() {
         initIntent();
-        MediaHelper mediaHelper = new MediaHelper(this);
-        mCheckMediaFileData = new ArrayList<>();
+        MediaQueryHelper mediaQueryHelper = new MediaQueryHelper(this);
+        mSelectPhotoList = new ArrayList<>();
 
-        if (mMediaFileAdapter == null) {
+        if (mPhotoListAdapter == null) {
 
-            mMediaFileAdapter = new MediaFileAdapter(this, mMediaFileData, mOptions);
-            mRecyclerView.setAdapter(mMediaFileAdapter);
+            mPhotoListAdapter = new PhotoListAdapter(this, mAdapterList, mOptions);
+            mRecyclerView.setAdapter(mPhotoListAdapter);
         }
-        mediaHelper.loadMedia(mOptions.isShowCamera, mOptions.isShowVideo, new ILoadMediaResult() {
+        mediaQueryHelper.loadMedia(mOptions.isShowCamera, mOptions.isShowVideo, new ILoadMediaResult() {
             @Override
-            public void mediaResult(List<MediaSelectorFolder> data) {
+            public void mediaResult(List<SelectorFolderPhoto> data) {
                 if (data != null && data.size() > 0) {
-                    mMediaFileData.addAll(data.get(0).fileData);
-                    if (mMediaFolderData == null) {
+                    mAdapterList.addAll(data.get(0).fileData);
+
+                    if (mMediaFolderData == null) {// TODO: 2020/5/31
                         mMediaFolderData = data;
                     } else {
                         mMediaFolderData.addAll(data);
                     }
-                    mMediaFileAdapter.notifyDataSetChanged();
+
+                    mPhotoListAdapter.notifyDataSetChanged();
                 }
 
             }
@@ -181,7 +182,7 @@ public class MediaActivity extends PermissionActivity {
     }
 
     private void initIntent() {
-        mMediaFileData = new ArrayList<>();
+        mAdapterList = new ArrayList<>();
         Intent intent = getIntent();
         mOptions = intent.getParcelableExtra(Contast.KEY_OPEN_MEDIA);
         if (mOptions == null) {
@@ -195,10 +196,8 @@ public class MediaActivity extends PermissionActivity {
     }
 
     private void resultMediaData() {
-        if (mCheckMediaFileData.size() > 0) {
+        if (mSelectPhotoList.size() > 0) {
             if (mOptions.isCompress && !mOptions.isShowVideo) {
-                final ViewGroup viewGroup = (ViewGroup) getWindow().getDecorView();
-                final View inflate = LayoutInflater.from(MediaActivity.this).inflate(R.layout.item_loading_view, viewGroup, false);
 
             } else {
                 resultMediaIntent();
@@ -209,7 +208,7 @@ public class MediaActivity extends PermissionActivity {
 
     private void resultMediaIntent() {
         Intent intent = new Intent();
-        intent.putParcelableArrayListExtra(Contast.KEY_REQUEST_MEDIA_DATA, (ArrayList<? extends Parcelable>) mCheckMediaFileData);
+        intent.putParcelableArrayListExtra(Contast.KEY_REQUEST_MEDIA_DATA, (ArrayList<? extends Parcelable>) mSelectPhotoList);
         setResult(Contast.CODE_RESULT_MEDIA, intent);
         finish();
     }
@@ -228,37 +227,37 @@ public class MediaActivity extends PermissionActivity {
             }
         });
 
-        mMediaFileAdapter.setOnRecyclerItemClickListener(new OnRecyclerItemClickListener() {
+        mPhotoListAdapter.setOnRecyclerItemClickListener(new OnRecyclerItemClickListener() {
             @Override
             public void itemClick(@NonNull View view, int position) {
-                if (mMediaFileData.get(position).isShowCamera) {
+                if (mAdapterList.get(position).isShowCamera) {
                     openCamera();
                 } else {
-                    if (mOptions.isCrop && mOptions.maxChooseMedia == 1 && mOptions.isShowVideo && mMediaFileData.get(position).isVideo) {
-                        Toasts.with().showToast(MediaActivity.this, R.string.video_not_crop, Toast.LENGTH_SHORT);
+                    if (mOptions.isCrop && mOptions.maxChooseMedia == 1 && mOptions.isShowVideo && mAdapterList.get(position).isVideo) {
+                        Toasts.with().showToast(PhotoListActivity.this, R.string.video_not_crop, Toast.LENGTH_SHORT);
                     } else {
-                        toPreviewActivity(position, mMediaFileData, mCheckMediaFileData);
+                        toPreviewActivity(position, mAdapterList, mSelectPhotoList);
                     }
                 }
             }
         });
 
 
-        mMediaFileAdapter.setOnCheckMediaListener(new MediaFileAdapter.OnCheckMediaListener() {
+        mPhotoListAdapter.setOnCheckMediaListener(new PhotoListAdapter.OnCheckMediaListener() {
             @Override
             public void onChecked(boolean isCheck, int position) {
                 if (isCheck) {
-                    mMediaFileData.get(position).isCheck = false;
-                    mCheckMediaFileData.remove(mMediaFileData.get(position));
+                    mAdapterList.get(position).isCheck = false;
+                    mSelectPhotoList.remove(mAdapterList.get(position));
                 } else {
-                    if (mCheckMediaFileData.size() < mOptions.maxChooseMedia) {
-                        mMediaFileData.get(position).isCheck = true;
-                        mCheckMediaFileData.add(mMediaFileData.get(position));
+                    if (mSelectPhotoList.size() < mOptions.maxChooseMedia) {
+                        mAdapterList.get(position).isCheck = true;
+                        mSelectPhotoList.add(mAdapterList.get(position));
                     } else {
-                        Toasts.with().showToast(MediaActivity.this, getString(R.string.max_choose_media, String.valueOf(mOptions.maxChooseMedia)));
+                        Toasts.with().showToast(PhotoListActivity.this, getString(R.string.max_choose_media, String.valueOf(mOptions.maxChooseMedia)));
                     }
                 }
-                mMediaFileAdapter.notifyItemChanged(position);
+                mPhotoListAdapter.notifyItemChanged(position);
             }
         });
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -266,9 +265,9 @@ public class MediaActivity extends PermissionActivity {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == 0) {
-                    Glide.with(MediaActivity.this).resumeRequests();
+                    Glide.with(PhotoListActivity.this).resumeRequests();
                 } else {
-                    Glide.with(MediaActivity.this).pauseRequests();
+                    Glide.with(PhotoListActivity.this).pauseRequests();
                 }
             }
 
@@ -290,8 +289,8 @@ public class MediaActivity extends PermissionActivity {
               //  cameraIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-                    mCameraFile = FileUtils.resultImageFile(MediaActivity.this);
-                    Uri cameraUri = FileUtils.fileToUri(MediaActivity.this, mCameraFile, cameraIntent);
+                    mCameraFile = FileUtils.resultImageFile(PhotoListActivity.this);
+                    Uri cameraUri = FileUtils.fileToUri(PhotoListActivity.this, mCameraFile, cameraIntent);
                     cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
                     startActivityForResult(cameraIntent, Contast.REQUEST_CAMERA_CODE);
                 }
@@ -299,20 +298,20 @@ public class MediaActivity extends PermissionActivity {
 
             @Override
             public void onNoAllow(List<String> list) {
-                showNoCameraAllowDialog(MediaActivity.this, getString(R.string.hint), getString(R.string.what_permission_is_must, getString(R.string.camera)));
+                showNoCameraAllowDialog(PhotoListActivity.this, getString(R.string.hint), getString(R.string.what_permission_is_must, getString(R.string.camera)));
             }
 
             @Override
             public void onForbid(List<String> list) {
 
-                Toast.makeText(MediaActivity.this,"permission deny",Toast.LENGTH_SHORT).show();
+                Toast.makeText(PhotoListActivity.this,"permission deny",Toast.LENGTH_SHORT).show();
 
             }
         }, Manifest.permission.CAMERA);
     }
 
     private void toPreviewActivity(int position, @NonNull List<MediaSelectorFile> data, @NonNull List<MediaSelectorFile> checkData) {
-        Intent intent = new Intent(MediaActivity.this, PreviewActivity.class);
+        Intent intent = new Intent(PhotoListActivity.this, PreviewActivity.class);
         intent.putParcelableArrayListExtra(Contast.KEY_PREVIEW_DATA_MEDIA, (ArrayList<? extends Parcelable>) data);
         intent.putParcelableArrayListExtra(Contast.KEY_PREVIEW_CHECK_MEDIA, (ArrayList<? extends Parcelable>) checkData);
         intent.putExtra(Contast.KEY_OPEN_MEDIA, mOptions);
@@ -343,9 +342,9 @@ public class MediaActivity extends PermissionActivity {
 
     private void clickCheckFolder(int position) {
         tv_all.setText(mMediaFolderData.get(position).folderName);
-        mMediaFileData.clear();
-        mMediaFileData.addAll(mMediaFolderData.get(position).fileData);
-        mMediaFileAdapter.notifyDataSetChanged();
+        mAdapterList.clear();
+        mAdapterList.addAll(mMediaFolderData.get(position).fileData);
+        mPhotoListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -366,13 +365,13 @@ public class MediaActivity extends PermissionActivity {
     public void previewMediaResult(@NonNull MediaSelectorFile mediaSelectorFile) {
         if (mediaSelectorFile.isCheck) {
             //首先先判断选择的媒体库
-            if (!mCheckMediaFileData.contains(mediaSelectorFile)) {
-                mCheckMediaFileData.add(mediaSelectorFile);
+            if (!mSelectPhotoList.contains(mediaSelectorFile)) {
+                mSelectPhotoList.add(mediaSelectorFile);
             }
 
         } else {
-            if (mCheckMediaFileData.contains(mediaSelectorFile)) {
-                mCheckMediaFileData.remove(mediaSelectorFile);
+            if (mSelectPhotoList.contains(mediaSelectorFile)) {
+                mSelectPhotoList.remove(mediaSelectorFile);
             }
         }
         for (int i = 0; i < mMediaFolderData.size(); i++) {
@@ -380,7 +379,7 @@ public class MediaActivity extends PermissionActivity {
                 mMediaFolderData.get(i).fileData.get(mMediaFolderData.get(i).fileData.indexOf(mediaSelectorFile)).isCheck = mediaSelectorFile.isCheck;
             }
         }
-        mMediaFileAdapter.notifyDataSetChanged();
+        mPhotoListAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -391,8 +390,8 @@ public class MediaActivity extends PermissionActivity {
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void resultCheckMediaData(@NonNull List<MediaSelectorFile> checkMediaData) {
         if (checkMediaData.size() > 0) {
-            mCheckMediaFileData.clear();
-            mCheckMediaFileData.addAll(checkMediaData);
+            mSelectPhotoList.clear();
+            mSelectPhotoList.addAll(checkMediaData);
             resultMediaIntent();
         }
     }
@@ -407,7 +406,7 @@ public class MediaActivity extends PermissionActivity {
                         FileUtils.scanImage(this, mCameraFile);
                         MediaSelectorFile mediaSelectorFile = MediaSelectorFile.checkFileToThis(mCameraFile);
                         if (mediaSelectorFile.hasData()) {
-                            mCheckMediaFileData.add(mediaSelectorFile);
+                            mSelectPhotoList.add(mediaSelectorFile);
                         }
                         resultMediaData();
                     }

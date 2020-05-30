@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediaSelectorFolder implements Parcelable {
+public class SelectorFolderPhoto implements Parcelable {
     public String folderName;
     public String folderPath;
     public List<MediaSelectorFile> fileData = new ArrayList<>();
@@ -14,10 +14,10 @@ public class MediaSelectorFolder implements Parcelable {
     public String firstFilePath;
     public boolean isAllVideo;
 
-    public MediaSelectorFolder() {
+    public SelectorFolderPhoto() {
     }
 
-    protected MediaSelectorFolder(Parcel in) {
+    protected SelectorFolderPhoto(Parcel in) {
         folderName = in.readString();
         folderPath = in.readString();
         fileData = in.createTypedArrayList(MediaSelectorFile.CREATOR);
@@ -26,15 +26,15 @@ public class MediaSelectorFolder implements Parcelable {
         isAllVideo = in.readByte() != 0;
     }
 
-    public static final Creator<MediaSelectorFolder> CREATOR = new Creator<MediaSelectorFolder>() {
+    public static final Creator<SelectorFolderPhoto> CREATOR = new Creator<SelectorFolderPhoto>() {
         @Override
-        public MediaSelectorFolder createFromParcel(Parcel in) {
-            return new MediaSelectorFolder(in);
+        public SelectorFolderPhoto createFromParcel(Parcel in) {
+            return new SelectorFolderPhoto(in);
         }
 
         @Override
-        public MediaSelectorFolder[] newArray(int size) {
-            return new MediaSelectorFolder[size];
+        public SelectorFolderPhoto[] newArray(int size) {
+            return new SelectorFolderPhoto[size];
         }
     };
 
@@ -48,8 +48,8 @@ public class MediaSelectorFolder implements Parcelable {
     public boolean equals(Object obj) {
         if (obj == null || folderPath == null)
             return false;
-        if (obj instanceof MediaSelectorFolder) {
-            MediaSelectorFolder folder = (MediaSelectorFolder) obj;
+        if (obj instanceof SelectorFolderPhoto) {
+            SelectorFolderPhoto folder = (SelectorFolderPhoto) obj;
             return this.folderPath.equals(folder.folderPath);
         }
         return super.equals(obj);

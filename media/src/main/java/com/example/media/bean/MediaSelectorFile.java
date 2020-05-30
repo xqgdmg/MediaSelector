@@ -107,8 +107,4 @@ public class MediaSelectorFile implements Parcelable {
         return mediaFile;
     }
 
-    public static ImageConfig thisToDefaultImageConfig(@NonNull MediaSelectorFile mediaFile) {
-        return ImageConfig.getDefaultConfig(mediaFile.filePath);
-    }
-
 }
