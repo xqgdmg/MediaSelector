@@ -12,13 +12,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.item.util.ScreenUtils;
 import com.example.media.MediaSelector;
 import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.R;
 import com.example.media.bean.MediaSelectorFile;
 import com.example.media.utils.DateUtils;
 import com.example.media.utils.GlideUtils;
+import com.example.media.utils.ScreenUtils;
 
 import java.util.List;
 

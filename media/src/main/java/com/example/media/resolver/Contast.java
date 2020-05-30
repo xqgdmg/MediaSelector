@@ -18,4 +18,5 @@ public interface Contast {
     int REQUEST_CAMERA_CODE = 2000;
 
 
+    float DEFAULT_VIEW_HEIGHT = 45;
 }

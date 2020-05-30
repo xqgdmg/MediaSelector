@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:textColor="@color/colorFF333333"
+            android:textColor="#FF333333"
             android:textSize="16sp"
             tools:text="huge" />
 
@@ -75,5 +75,5 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorFFE1E1E1" />
+        android:background="#FFE1E1E1" />
 </RelativeLayout>

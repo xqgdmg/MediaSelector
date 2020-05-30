@@ -20,9 +20,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.item.weight.TitleView;
 import com.example.media.MediaSelector;
 import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.R;
@@ -43,13 +43,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import utils.task.CompressImageTask;
-
 public class PreviewActivity extends PermissionActivity {
 
     private PreviewViewPager mVpPreview;
-    private TitleView mTvTop;
-    private TitleView mTvBottom;
+    private TextView tv_select;
+    private TextView tv_back_bottom;
+    private TextView tv_back;
+    private TextView tv_finish;
     private List<MediaSelectorFile> mMediaFileData;
     private PreviewAdapter mPreviewAdapter;
     private boolean isShowTitleView = true;
@@ -81,10 +81,12 @@ public class PreviewActivity extends PermissionActivity {
         layoutParams.width = ScreenUtils.screenWidth(this);
         layoutParams.height = ScreenUtils.screenHeight(this);
         mVpPreview.setLayoutParams(layoutParams);
-        mTvTop = findViewById(R.id.ctv_top);
+        tv_finish = findViewById(R.id.tv_finish);
+        tv_back = findViewById(R.id.tv_back);
         mRvCheckMedia = findViewById(R.id.rv_check_media);
-        mRvCheckMedia.setLayoutManager(new LinearLayoutManager(this, LinearLayout.HORIZONTAL, false));
-        mTvBottom = findViewById(R.id.ctv_bottom);
+        mRvCheckMedia.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        tv_back_bottom = findViewById(R.id.tv_back_bottom);
+        tv_select = findViewById(R.id.tv_select);
         mLlBottom = findViewById(R.id.ll_bottom);
     }
 
@@ -97,7 +99,6 @@ public class PreviewActivity extends PermissionActivity {
         mMediaFileData = intent.getParcelableArrayListExtra(Contast.KEY_PREVIEW_DATA_MEDIA);
         mPreviewPosition = intent.getIntExtra(Contast.KEY_PREVIEW_POSITION, 0);
         mOptions = intent.getParcelableExtra(Contast.KEY_OPEN_MEDIA);
-        mTvTop.mViewRoot.setBackgroundColor(ContextCompat.getColor(this, mOptions.themeColor));
         if (mMediaFileData == null || mMediaFileData.size() == 0) {
             Toasts.with().showToast(this, "没有预览媒体库文件");
             finish();
@@ -115,9 +116,9 @@ public class PreviewActivity extends PermissionActivity {
                 }
             }
         }
-        mTvTop.mTvBack.setText(getString(R.string.count_sum_count, String.valueOf(mPreviewPosition + 1), String.valueOf(mMediaFileData.size())));
+        tv_back.setText(getString(R.string.count_sum_count, String.valueOf(mPreviewPosition + 1), String.valueOf(mMediaFileData.size())));
         setTitleViewSureText();
-        mTvBottom.mTvSure.setCompoundDrawablesWithIntrinsicBounds(mMediaFileData.get(mPreviewPosition).isCheck ? R.mipmap.icon_preview_check : R.mipmap.icon_preview_uncheck, 0, 0, 0);
+        tv_select.setCompoundDrawablesWithIntrinsicBounds(mMediaFileData.get(mPreviewPosition).isCheck ? R.mipmap.icon_preview_check : R.mipmap.icon_preview_uncheck, 0, 0, 0);
         mPreviewAdapter = new PreviewAdapter(mMediaFileData);
         mVpPreview.setAdapter(mPreviewAdapter);
         mVpPreview.setCurrentItem(mPreviewPosition, true);
@@ -131,9 +132,9 @@ public class PreviewActivity extends PermissionActivity {
 
     private void setTitleViewSureText() {
         if (mCheckMediaData.size() > 0) {
-            mTvTop.mTvSure.setText(getString(R.string.complete_count, String.valueOf(mCheckMediaData.size()), String.valueOf(mOptions.maxChooseMedia)));
+            tv_finish.setText(getString(R.string.complete_count, String.valueOf(mCheckMediaData.size()), String.valueOf(mOptions.maxChooseMedia)));
         } else {
-            mTvTop.mTvSure.setText(R.string.sure);
+            tv_finish.setText(R.string.sure);
         }
     }
 
@@ -147,8 +148,8 @@ public class PreviewActivity extends PermissionActivity {
             @Override
             public void onPageSelected(int i) {
                 mPreviewPosition = i;
-                mTvTop.mTvBack.setText(getString(R.string.count_sum_count, String.valueOf(i + 1), String.valueOf(mMediaFileData.size())));
-                mTvBottom.mTvSure.setCompoundDrawablesWithIntrinsicBounds(mMediaFileData.get(i).isCheck ? R.mipmap.icon_preview_check : R.mipmap.icon_preview_uncheck, 0, 0, 0);
+                tv_back.setText(getString(R.string.count_sum_count, String.valueOf(i + 1), String.valueOf(mMediaFileData.size())));
+                tv_select.setCompoundDrawablesWithIntrinsicBounds(mMediaFileData.get(i).isCheck ? R.mipmap.icon_preview_check : R.mipmap.icon_preview_uncheck, 0, 0, 0);
                 mCheckAdapter.notifyCheckData(mMediaFileData.get(mPreviewPosition));
                 if (mCheckMediaData.contains(mMediaFileData.get(mPreviewPosition))) {
                     mRvCheckMedia.scrollToPosition(mCheckMediaData.indexOf(mMediaFileData.get(mPreviewPosition)));
@@ -166,7 +167,6 @@ public class PreviewActivity extends PermissionActivity {
                 if (mAnimatorSet != null && mAnimatorSet.isRunning()) {
                     mAnimatorSet.end();
                 }
-                titleViewAnimation();
                 isShowTitleView = !isShowTitleView;
             }
         });
@@ -192,12 +192,12 @@ public class PreviewActivity extends PermissionActivity {
 
     protected void initEvent() {
 
-        mTvBottom.setOnSureViewClickListener(new TitleView.OnSureViewClickListener() {
+        tv_select.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSureClick(@NonNull View view) {
+            public void onClick(View view) {
                 if (mCheckMediaData.size() < mOptions.maxChooseMedia || (mCheckMediaData.size() == mOptions.maxChooseMedia && mMediaFileData.get(mPreviewPosition).isCheck)) {
                     mMediaFileData.get(mPreviewPosition).isCheck = !mMediaFileData.get(mPreviewPosition).isCheck;
-                    mTvBottom.mTvSure.setCompoundDrawablesWithIntrinsicBounds(mMediaFileData.get(mPreviewPosition).isCheck ? R.mipmap.icon_preview_check : R.mipmap.icon_preview_uncheck, 0, 0, 0);
+                    tv_select.setCompoundDrawablesWithIntrinsicBounds(mMediaFileData.get(mPreviewPosition).isCheck ? R.mipmap.icon_preview_check : R.mipmap.icon_preview_uncheck, 0, 0, 0);
                     EventBus.getDefault().post(mMediaFileData.get(mPreviewPosition));
                     if (mCheckAdapter != null) {
                         if (mMediaFileData.get(mPreviewPosition).isCheck) {
@@ -216,24 +216,21 @@ public class PreviewActivity extends PermissionActivity {
                 } else {
                     Toasts.with().showToast(PreviewActivity.this, R.string.max_choose_media, String.valueOf(mOptions.maxChooseMedia));
                 }
-
-
             }
         });
-        mTvTop.setOnSureViewClickListener(new TitleView.OnSureViewClickListener() {
+        tv_finish.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSureClick(@NonNull View view) {
+            public void onClick(View view) {
                 if (mCheckMediaData.size() <= 0) {
                     mMediaFileData.get(mPreviewPosition).isCheck = true;
                     mCheckMediaData.add(mMediaFileData.get(mPreviewPosition));
                 }
                 sureData();
-
             }
         });
-        mTvTop.setOnBackViewClickListener(new TitleView.OnBackViewClickListener() {
+        tv_back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onBackClick(@NonNull View view) {
+            public void onClick(View view) {
                 finish();
             }
         });
@@ -276,31 +273,6 @@ public class PreviewActivity extends PermissionActivity {
             EventBus.getDefault().post(mCheckMediaData);
             finish();
         }
-    }
-
-    private void titleViewAnimation() {
-        ObjectAnimator topAnimatorTranslation;
-        ObjectAnimator bottomAnimatorTranslation;
-        if (mAnimatorSet == null) {
-            mAnimatorSet = new AnimatorSet();
-        }
-        if (isShowTitleView) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            topAnimatorTranslation = ObjectAnimator.ofFloat(mTvTop, "translationY", 0, -(ScreenUtils.getStatuWindowsHeight(this) + mTvTop.getMeasuredHeight()));
-            bottomAnimatorTranslation = ObjectAnimator.ofFloat(mLlBottom, "translationY", 0, (mLlBottom.getMeasuredHeight()));
-
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            topAnimatorTranslation = ObjectAnimator.ofFloat(mTvTop, "translationY", -(ScreenUtils.getStatuWindowsHeight(this) + mTvTop.getMeasuredHeight()), 0);
-            bottomAnimatorTranslation = ObjectAnimator.ofFloat(mLlBottom, "translationY", (mLlBottom.getMeasuredHeight()), 0);
-
-        }
-        mAnimatorSet.setDuration(500);
-        mAnimatorSet.setInterpolator(new LinearInterpolator());
-        mAnimatorSet.playTogether(topAnimatorTranslation, bottomAnimatorTranslation);
-        mAnimatorSet.start();
-
-
     }
 
     @Override

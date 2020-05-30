@@ -19,10 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.item.weight.TitleView;
 import com.example.media.MediaSelector;
 import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.R;
@@ -47,21 +47,21 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import utils.task.CompressImageTask;
-
 public class MediaActivity extends PermissionActivity {
 
-    private TitleView mTvTop;
-    private TitleView mTvBottom;
     private RecyclerView mRecyclerView;
     private MediaFileAdapter mMediaFileAdapter;
     private List<MediaSelectorFile> mMediaFileData;
     private List<MediaSelectorFolder> mMediaFolderData;
     private FolderWindow mFolderWindow;
-    private List<MediaSelectorFile> mCheckMediaFileData;
+    private List<MediaSelectorFile> mCheckMediaFileData;//already choose
     private MediaSelector.MediaOptions mOptions;
     private File mCameraFile;
     private AlertDialog mCameraPermissionDialog;
+    private TextView tv_back;
+    private TextView tv_finish;
+    private TextView tv_preview;
+    private TextView tv_all;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,8 +149,10 @@ public class MediaActivity extends PermissionActivity {
 
     protected void initView() {
         registerEventBus();
-        mTvTop = findViewById(R.id.ctv_top);
-        mTvBottom = findViewById(R.id.ctv_bottom);
+        tv_back = findViewById(R.id.tv_back);
+        tv_finish = findViewById(R.id.tv_finish);
+        tv_all = findViewById(R.id.tv_all);
+        tv_preview = findViewById(R.id.tv_preview);
         mRecyclerView = findViewById(R.id.ry_data);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
     }
@@ -192,8 +194,6 @@ public class MediaActivity extends PermissionActivity {
             if (mOptions.maxChooseMedia <= 0) {
                 mOptions.maxChooseMedia = 1;
             }
-            mTvTop.mViewRoot.setBackgroundColor(ContextCompat.getColor(this, mOptions.themeColor));
-            mTvBottom.mViewRoot.setBackgroundColor(ContextCompat.getColor(this, mOptions.themeColor));
         }
 
     }
@@ -219,26 +219,35 @@ public class MediaActivity extends PermissionActivity {
     }
 
     protected void initEvent() {
-        mTvTop.setOnSureViewClickListener(new TitleView.OnSureViewClickListener() {
+        tv_back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSureClick(@NonNull View view) {
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        tv_finish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 resultMediaData();
             }
         });
-        mTvBottom.setOnTitleViewClickListener(new TitleView.OnTitleViewClickListener() {
+        tv_all.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onBackClick(@NonNull View view) {
+            public void onClick(View view) {
                 showMediaFolderWindows(view);
             }
-
+        });
+        tv_preview.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSureClick(@NonNull View view) {
+            public void onClick(View view) {
+
                 if (mCheckMediaFileData.size() > 0) {
                     toPreviewActivity(0, mCheckMediaFileData, mCheckMediaFileData);
                 }
 
             }
         });
+
         mMediaFileAdapter.setOnRecyclerItemClickListener(new OnRecyclerItemClickListener() {
             @Override
             public void itemClick(@NonNull View view, int position) {
@@ -269,7 +278,6 @@ public class MediaActivity extends PermissionActivity {
                         Toasts.with().showToast(MediaActivity.this, getString(R.string.max_choose_media, String.valueOf(mOptions.maxChooseMedia)));
                     }
                 }
-                setSureStatus();
                 mMediaFileAdapter.notifyItemChanged(position);
             }
         });
@@ -353,21 +361,8 @@ public class MediaActivity extends PermissionActivity {
 
     }
 
-    private void setSureStatus() {
-        if (mCheckMediaFileData.size() > 0) {
-            mTvTop.mTvSure.setClickable(true);
-            mTvTop.mTvSure.setTextColor(ContextCompat.getColor(MediaActivity.this, R.color.colorTextSelector));
-            mTvTop.mTvSure.setText(getString(R.string.complete_count, String.valueOf(mCheckMediaFileData.size()), String.valueOf(mOptions.maxChooseMedia)));
-        } else {
-            mTvTop.mTvSure.setClickable(false);
-            mTvTop.mTvSure.setTextColor(ContextCompat.getColor(MediaActivity.this, R.color.colorTextUnSelector));
-            mTvTop.mTvSure.setText(R.string.sure);
-
-        }
-    }
-
     private void clickCheckFolder(int position) {
-        mTvBottom.mTvBack.setText(mMediaFolderData.get(position).folderName);
+        tv_all.setText(mMediaFolderData.get(position).folderName);
         mMediaFileData.clear();
         mMediaFileData.addAll(mMediaFolderData.get(position).fileData);
         mMediaFileAdapter.notifyDataSetChanged();
@@ -405,7 +400,6 @@ public class MediaActivity extends PermissionActivity {
                 mMediaFolderData.get(i).fileData.get(mMediaFolderData.get(i).fileData.indexOf(mediaSelectorFile)).isCheck = mediaSelectorFile.isCheck;
             }
         }
-        setSureStatus();
         mMediaFileAdapter.notifyDataSetChanged();
     }
 

@@ -18,11 +18,11 @@ import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.PopupWindow;
 
-import com.example.item.Contast;
 import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.R;
 import com.example.media.adapter.MediaFolderAdapter;
 import com.example.media.bean.MediaSelectorFolder;
+import com.example.media.resolver.Contast;
 import com.example.media.utils.ScreenUtils;
 
 import java.util.ArrayList;
