@@ -18,14 +18,6 @@
             android:textColor="#19191a"
             android:textSize="14sp"
             android:text="返回" />
-        <TextView
-            android:id="@+id/tv_finish"
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:textColor="#19191a"
-            android:background="#5500ff00"
-            android:textSize="14sp"
-            android:text="完成" />
     </LinearLayout>
 
     <LinearLayout
@@ -41,14 +33,6 @@
             android:textColor="#19191a"
             android:textSize="14sp"
             android:text="全部照片" />
-        <TextView
-            android:id="@+id/tv_preview"
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:background="#5500ff00"
-            android:textColor="#19191a"
-            android:textSize="14sp"
-            android:text="预览" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

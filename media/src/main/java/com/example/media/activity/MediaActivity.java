@@ -59,8 +59,6 @@ public class MediaActivity extends PermissionActivity {
     private File mCameraFile;
     private AlertDialog mCameraPermissionDialog;
     private TextView tv_back;
-    private TextView tv_finish;
-    private TextView tv_preview;
     private TextView tv_all;
 
     @Override
@@ -150,9 +148,7 @@ public class MediaActivity extends PermissionActivity {
     protected void initView() {
         registerEventBus();
         tv_back = findViewById(R.id.tv_back);
-        tv_finish = findViewById(R.id.tv_finish);
         tv_all = findViewById(R.id.tv_all);
-        tv_preview = findViewById(R.id.tv_preview);
         mRecyclerView = findViewById(R.id.ry_data);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
     }
@@ -225,26 +221,10 @@ public class MediaActivity extends PermissionActivity {
                 finish();
             }
         });
-        tv_finish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resultMediaData();
-            }
-        });
         tv_all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showMediaFolderWindows(view);
-            }
-        });
-        tv_preview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (mCheckMediaFileData.size() > 0) {
-                    toPreviewActivity(0, mCheckMediaFileData, mCheckMediaFileData);
-                }
-
             }
         });
 
