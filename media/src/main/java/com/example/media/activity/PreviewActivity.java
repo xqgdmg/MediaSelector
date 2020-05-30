@@ -116,4 +116,42 @@ public class PreviewActivity extends PermissionActivity {
         }
     }
 
+    /*
+     * 裁剪返回结果
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode) {
+            case RESULT_OK:
+                if (requestCode == UCrop.REQUEST_CROP) {
+                    if (data == null) {
+                        return;
+                    }
+                    final Uri resultUri = UCrop.getOutput(data);
+                    if (resultUri != null && resultUri.getPath() != null) {
+                        mCheckMediaData.clear();
+                        File file = new File(resultUri.getPath());
+                        if (FileUtils.existsFile(file.getAbsolutePath())) {
+                            mCheckMediaData.add(MediaSelectorFile.checkFileToThis(file));
+                            EventBus.getDefault().post(mCheckMediaData);
+                            finish();
+                        } else {
+                            Toasts.with().showToast(this, R.string.file_not_exit, Toast.LENGTH_SHORT);
+                        }
+                    }
+
+                }
+                break;
+            case UCrop.RESULT_ERROR:
+                if (requestCode == UCrop.REQUEST_CROP) {
+                    Toasts.with().showToast(this, R.string.crop_image_fail);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+
 }
