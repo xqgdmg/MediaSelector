@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.media.MediaSelector;
+import com.example.media.PhotoSelector;
 import com.example.media.R;
 import com.example.media.bean.MediaSelectorFile;
 import com.example.media.permission.PermissionActivity;
@@ -31,7 +31,7 @@ public class PreviewActivity extends PermissionActivity {
     private List<MediaSelectorFile> mMediaFileData;
     private int mPreviewPosition;
     private List<MediaSelectorFile> mCheckMediaData;
-    private MediaSelector.MediaOptions mOptions;
+    private PhotoSelector.MediaOptions mOptions;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

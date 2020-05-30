@@ -12,17 +12,16 @@ import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.media.MediaSelector;
+import com.example.media.PhotoSelector;
 import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.R;
 import com.example.media.adapter.PhotoListAdapter;
@@ -37,10 +36,9 @@ import com.example.media.utils.FileUtils;
 import com.example.media.weight.DialogHelper;
 import com.example.media.weight.FolderWindow;
 import com.example.media.weight.Toasts;
+import com.yalantis.ucrop.UCrop;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,10 +49,10 @@ public class PhotoListActivity extends PermissionActivity {
     private RecyclerView mRecyclerView;
     private PhotoListAdapter mPhotoListAdapter;
     private List<MediaSelectorFile> mAdapterList;
-    private List<SelectorFolderPhoto> mMediaFolderData;
+    private List<SelectorFolderPhoto> mPhotoFolderData;
     private FolderWindow mFolderWindow;
     private List<MediaSelectorFile> mSelectPhotoList;//already choose
-    private MediaSelector.MediaOptions mOptions;
+    private PhotoSelector.MediaOptions mOptions;
     private File mCameraFile;
     private AlertDialog mCameraPermissionDialog;
     private TextView tv_back;
@@ -138,14 +136,7 @@ public class PhotoListActivity extends PermissionActivity {
         Glide.with(this).onStop();
     }
 
-    @Override
-    protected void onDestroy() {
-        unRegisterEventBus();
-        super.onDestroy();
-    }
-
     protected void initView() {
-        registerEventBus();
         tv_back = findViewById(R.id.tv_back);
         tv_all = findViewById(R.id.tv_all);
         mRecyclerView = findViewById(R.id.ry_data);
@@ -166,15 +157,15 @@ public class PhotoListActivity extends PermissionActivity {
             @Override
             public void mediaResult(List<SelectorFolderPhoto> data) {
                 if (data != null && data.size() > 0) {
-                    mAdapterList.addAll(data.get(0).fileData);
+                    mAdapterList.addAll(data.get(0).fileData);//all photo
+                    mPhotoListAdapter.notifyDataSetChanged();
 
-                    if (mMediaFolderData == null) {// TODO: 2020/5/31
-                        mMediaFolderData = data;
+                    if (mPhotoFolderData == null) {// TODO: 2020/5/31
+                        mPhotoFolderData = data;
                     } else {
-                        mMediaFolderData.addAll(data);
+                        mPhotoFolderData.addAll(data);
                     }
 
-                    mPhotoListAdapter.notifyDataSetChanged();
                 }
 
             }
@@ -186,7 +177,7 @@ public class PhotoListActivity extends PermissionActivity {
         Intent intent = getIntent();
         mOptions = intent.getParcelableExtra(Contast.KEY_OPEN_MEDIA);
         if (mOptions == null) {
-            mOptions = MediaSelector.getDefaultOptions();
+            mOptions = PhotoSelector.getDefaultOptions();
         } else {
             if (mOptions.maxChooseMedia <= 0) {
                 mOptions.maxChooseMedia = 1;
@@ -200,16 +191,16 @@ public class PhotoListActivity extends PermissionActivity {
             if (mOptions.isCompress && !mOptions.isShowVideo) {
 
             } else {
-                resultMediaIntent();
+                resultIntent();
             }
 
         }
     }
 
-    private void resultMediaIntent() {
+    private void resultIntent() {
         Intent intent = new Intent();
-        intent.putParcelableArrayListExtra(Contast.KEY_REQUEST_MEDIA_DATA, (ArrayList<? extends Parcelable>) mSelectPhotoList);
-        setResult(Contast.CODE_RESULT_MEDIA, intent);
+        intent.putParcelableArrayListExtra(Contast.KEY_REQUEST_PHOTO_DATA, (ArrayList<? extends Parcelable>) mSelectPhotoList);
+        setResult(Contast.CODE_RESULT_PHOTO_LIST, intent);
         finish();
     }
 
@@ -223,7 +214,7 @@ public class PhotoListActivity extends PermissionActivity {
         tv_all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showMediaFolderWindows(view);
+                showPhotoFolderWindows(view);
             }
         });
 
@@ -236,7 +227,7 @@ public class PhotoListActivity extends PermissionActivity {
                     if (mOptions.isCrop && mOptions.maxChooseMedia == 1 && mOptions.isShowVideo && mAdapterList.get(position).isVideo) {
                         Toasts.with().showToast(PhotoListActivity.this, R.string.video_not_crop, Toast.LENGTH_SHORT);
                     } else {
-                        toPreviewActivity(position, mAdapterList, mSelectPhotoList);
+                        toCrop(position, mAdapterList);
                     }
                 }
             }
@@ -310,20 +301,43 @@ public class PhotoListActivity extends PermissionActivity {
         }, Manifest.permission.CAMERA);
     }
 
-    private void toPreviewActivity(int position, @NonNull List<MediaSelectorFile> data, @NonNull List<MediaSelectorFile> checkData) {
-        Intent intent = new Intent(PhotoListActivity.this, PreviewActivity.class);
-        intent.putParcelableArrayListExtra(Contast.KEY_PREVIEW_DATA_MEDIA, (ArrayList<? extends Parcelable>) data);
-        intent.putParcelableArrayListExtra(Contast.KEY_PREVIEW_CHECK_MEDIA, (ArrayList<? extends Parcelable>) checkData);
-        intent.putExtra(Contast.KEY_OPEN_MEDIA, mOptions);
-        intent.putExtra(Contast.KEY_PREVIEW_POSITION, position);
-        startActivity(intent);
+    private void toCrop(int position, @NonNull List<MediaSelectorFile> data) {
+
+        if (mSelectPhotoList.size() <= 0) {
+            data.get(position).isCheck = true;
+            mSelectPhotoList.add(data.get(position));
+        }
+        sureData();
     }
 
+    // 跳转裁剪
+    private void sureData() {
+        if (mOptions.isCrop && mOptions.maxChooseMedia == 1) {
+            if (!mSelectPhotoList.get(0).isVideo) {
+                UCrop.Options options = new UCrop.Options();
+                options.setCompressionQuality(100);
+                options.setToolbarColor(ContextCompat.getColor(this, mOptions.themeColor));
+                options.setStatusBarColor(ContextCompat.getColor(this, mOptions.themeColor));
+                options.setLogoColor(ContextCompat.getColor(this, mOptions.themeColor));
+                options.setActiveWidgetColor(ContextCompat.getColor(this, mOptions.themeColor));
+                UCrop.of(Uri.fromFile(new File(mSelectPhotoList.get(0).filePath)), Uri.fromFile(FileUtils.resultImageFile(this, "Crop")))
+                        .withAspectRatio(mOptions.scaleX, mOptions.scaleY)
+                        .withMaxResultSize(mOptions.cropWidth, mOptions.cropHeight)
+                        .withOptions(options)
+                        .start(this);
+            } else {
+                Toasts.with().showToast(this, R.string.video_not_crop);
+            }
+        } else {
+            EventBus.getDefault().post(mSelectPhotoList);
+            finish();
+        }
+    }
 
-    private void showMediaFolderWindows(View view) {
+    private void showPhotoFolderWindows(View view) {
 
         if (mFolderWindow == null) {
-            mFolderWindow = new FolderWindow(this, mMediaFolderData);
+            mFolderWindow = new FolderWindow(this, mPhotoFolderData);
             mFolderWindow.setOnPopupItemClickListener(new FolderWindow.OnPopupItemClickListener() {
                 @Override
                 public void onItemClick(@NonNull View view, int position) {
@@ -337,13 +351,12 @@ public class PhotoListActivity extends PermissionActivity {
             mFolderWindow.showWindows(view);
         }
 
-
     }
 
     private void clickCheckFolder(int position) {
-        tv_all.setText(mMediaFolderData.get(position).folderName);
+        tv_all.setText(mPhotoFolderData.get(position).folderName);
         mAdapterList.clear();
-        mAdapterList.addAll(mMediaFolderData.get(position).fileData);
+        mAdapterList.addAll(mPhotoFolderData.get(position).fileData);
         mPhotoListAdapter.notifyDataSetChanged();
     }
 
@@ -356,51 +369,11 @@ public class PhotoListActivity extends PermissionActivity {
         }
     }
 
-    /**
-     * 预览图片选择发送事件
-     *
-     * @param mediaSelectorFile
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void previewMediaResult(@NonNull MediaSelectorFile mediaSelectorFile) {
-        if (mediaSelectorFile.isCheck) {
-            //首先先判断选择的媒体库
-            if (!mSelectPhotoList.contains(mediaSelectorFile)) {
-                mSelectPhotoList.add(mediaSelectorFile);
-            }
-
-        } else {
-            if (mSelectPhotoList.contains(mediaSelectorFile)) {
-                mSelectPhotoList.remove(mediaSelectorFile);
-            }
-        }
-        for (int i = 0; i < mMediaFolderData.size(); i++) {
-            if (mMediaFolderData.get(i).fileData.contains(mediaSelectorFile)) {
-                mMediaFolderData.get(i).fileData.get(mMediaFolderData.get(i).fileData.indexOf(mediaSelectorFile)).isCheck = mediaSelectorFile.isCheck;
-            }
-        }
-        mPhotoListAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * 预览图片返回
-     *
-     * @param checkMediaData
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void resultCheckMediaData(@NonNull List<MediaSelectorFile> checkMediaData) {
-        if (checkMediaData.size() > 0) {
-            mSelectPhotoList.clear();
-            mSelectPhotoList.addAll(checkMediaData);
-            resultMediaIntent();
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (resultCode) {
-            case Activity.RESULT_OK:
+            case Activity.RESULT_OK:// 请求权限
                 if (requestCode == Contast.REQUEST_CAMERA_CODE) {
                     if (FileUtils.existsFile(mCameraFile.getAbsolutePath())) {
                         FileUtils.scanImage(this, mCameraFile);
@@ -411,22 +384,34 @@ public class PhotoListActivity extends PermissionActivity {
                         resultMediaData();
                     }
 
+                }else if (requestCode == UCrop.REQUEST_CROP) {//crop ok
+                    if (data == null) {
+                        return;
+                    }
+                    final Uri resultUri = UCrop.getOutput(data);
+                    if (resultUri != null && resultUri.getPath() != null) {
+                        mSelectPhotoList.clear();
+                        File file = new File(resultUri.getPath());
+                        if (FileUtils.existsFile(file.getAbsolutePath())) {
+                            mSelectPhotoList.add(MediaSelectorFile.checkFileToThis(file));
+                            resultIntent();
+                            finish();
+                        } else {
+                            Toasts.with().showToast(this, R.string.file_not_exit, Toast.LENGTH_SHORT);
+                        }
+                    }
+
                 }
                 break;
-
+            case UCrop.RESULT_ERROR://crop error
+                if (requestCode == UCrop.REQUEST_CROP) {
+                    Toasts.with().showToast(this, R.string.crop_image_fail);
+                }
+                break;
+            default:
+                break;
         }
     }
 
-    protected void registerEventBus() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-    }
-
-    protected void unRegisterEventBus() {
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
-    }
 
 }
