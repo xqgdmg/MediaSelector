@@ -44,6 +44,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
+
 public class PhotoListActivity extends PermissionActivity {
 
     private RecyclerView mRecyclerView;
@@ -188,12 +190,7 @@ public class PhotoListActivity extends PermissionActivity {
 
     private void resultMediaData() {
         if (mSelectPhotoList.size() > 0) {
-            if (mOptions.isCompress && !mOptions.isShowVideo) {
-
-            } else {
-                resultIntent();
-            }
-
+            resultIntent();
         }
     }
 
@@ -255,7 +252,7 @@ public class PhotoListActivity extends PermissionActivity {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == 0) {
+                if (newState == SCROLL_STATE_IDLE) {
                     Glide.with(PhotoListActivity.this).resumeRequests();
                 } else {
                     Glide.with(PhotoListActivity.this).pauseRequests();
@@ -283,7 +280,7 @@ public class PhotoListActivity extends PermissionActivity {
                     mCameraFile = FileUtils.resultImageFile(PhotoListActivity.this);
                     Uri cameraUri = FileUtils.fileToUri(PhotoListActivity.this, mCameraFile, cameraIntent);
                     cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
-                    startActivityForResult(cameraIntent, Contast.REQUEST_CAMERA_CODE);
+                    startActivityForResult(cameraIntent, Contast.REQUEST_OPEN_CAMERA_CODE);
                 }
             }
 
@@ -374,7 +371,7 @@ public class PhotoListActivity extends PermissionActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (resultCode) {
             case Activity.RESULT_OK:// 请求权限
-                if (requestCode == Contast.REQUEST_CAMERA_CODE) {
+                if (requestCode == Contast.REQUEST_OPEN_CAMERA_CODE) {
                     if (FileUtils.existsFile(mCameraFile.getAbsolutePath())) {
                         FileUtils.scanImage(this, mCameraFile);
                         PhotoFile photoFile = PhotoFile.checkFileToThis(mCameraFile);

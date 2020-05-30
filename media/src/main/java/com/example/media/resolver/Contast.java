@@ -9,6 +9,6 @@ public interface Contast {
     int CODE_RESULT_PHOTO_LIST = 1012;
     String ALL_FILE = "全部文件";
     String ALL_VIDEO = "全部视频";
-    int REQUEST_CAMERA_CODE = 2000;
+    int REQUEST_OPEN_CAMERA_CODE = 2000;
     float DEFAULT_VIEW_HEIGHT = 45;
 }
