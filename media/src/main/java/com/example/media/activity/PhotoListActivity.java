@@ -31,7 +31,7 @@ import com.example.media.permission.PermissionActivity;
 import com.example.media.permission.imp.OnPermissionsResult;
 import com.example.media.resolver.Contast;
 import com.example.media.resolver.ILoadMediaResult;
-import com.example.media.resolver.MediaQueryHelper;
+import com.example.media.resolver.PhotoQueryHelper;
 import com.example.media.utils.FileUtils;
 import com.example.media.weight.DialogHelper;
 import com.example.media.weight.FolderWindow;
@@ -145,7 +145,7 @@ public class PhotoListActivity extends PermissionActivity {
 
     protected void initData() {
         initIntent();
-        MediaQueryHelper mediaQueryHelper = new MediaQueryHelper(this);
+        PhotoQueryHelper photoQueryHelper = new PhotoQueryHelper(this);
         mSelectPhotoList = new ArrayList<>();
 
         if (mPhotoListAdapter == null) {
@@ -153,7 +153,7 @@ public class PhotoListActivity extends PermissionActivity {
             mPhotoListAdapter = new PhotoListAdapter(this, mAdapterList, mOptions);
             mRecyclerView.setAdapter(mPhotoListAdapter);
         }
-        mediaQueryHelper.loadMedia(mOptions.isShowCamera, mOptions.isShowVideo, new ILoadMediaResult() {
+        photoQueryHelper.loadMedia(mOptions.isShowCamera, mOptions.isShowVideo, new ILoadMediaResult() {
             @Override
             public void mediaResult(List<PhotoFolder> data) {
                 if (data != null && data.size() > 0) {

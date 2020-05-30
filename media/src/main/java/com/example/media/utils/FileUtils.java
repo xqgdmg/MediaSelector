@@ -12,7 +12,7 @@ import android.os.Environment;
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
-import com.example.media.weight.MediaScanner;
+import com.example.media.weight.PhotoScanner;
 
 import java.io.File;
 import java.util.List;
@@ -109,7 +109,7 @@ public class FileUtils {
 
     public static void scanImage(@NonNull Context context, @NonNull File file) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            MediaScanner ms = new MediaScanner(context, file);
+            PhotoScanner ms = new PhotoScanner(context, file);
             ms.refresh();
         } else {
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);

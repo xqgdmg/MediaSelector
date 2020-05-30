@@ -3,10 +3,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <application>
-        <activity android:name=".activity.PhotoListActivity">
+        <activity android:name=".activity.PhotoListActivity"/>
 
-        </activity>
-        <activity android:name=".activity.PreviewActivity"/>
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
@@ -21,5 +19,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_path" />
         </provider>
+
     </application>
 </manifest>

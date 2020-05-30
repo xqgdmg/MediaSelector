@@ -18,7 +18,7 @@ import com.example.media.utils.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediaQueryHelper {
+public class PhotoQueryHelper {
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     //查询的内容
     @SuppressLint("InlinedApi")
@@ -48,14 +48,14 @@ public class MediaQueryHelper {
     private static final String SORT_ORDER = MediaStore.Files.FileColumns.DATE_MODIFIED + " desc";
     private Activity mActivity;
 
-    public MediaQueryHelper(@NonNull Activity activity) {
+    public PhotoQueryHelper(@NonNull Activity activity) {
         this.mActivity = activity;
     }
 
 
     public void loadMedia(boolean isShowCamera, boolean isShowVideo, @Nullable ILoadMediaResult onResult) {
 
-        Cursor cursor = mActivity.getContentResolver().query(MediaQueryHelper.QUERY_URI, isShowVideo ? ALL_PROJECTION : MediaQueryHelper.IMAGE_PROJECTION, isShowVideo ? ALL_SELECTION_TYPE : MediaQueryHelper.IMAGE_SELECTION_TYPE, isShowVideo ? ALL_WHERE_TYPE : MediaQueryHelper.IMAGE_WHERE_TYPE, SORT_ORDER);
+        Cursor cursor = mActivity.getContentResolver().query(PhotoQueryHelper.QUERY_URI, isShowVideo ? ALL_PROJECTION : PhotoQueryHelper.IMAGE_PROJECTION, isShowVideo ? ALL_SELECTION_TYPE : PhotoQueryHelper.IMAGE_SELECTION_TYPE, isShowVideo ? ALL_WHERE_TYPE : PhotoQueryHelper.IMAGE_WHERE_TYPE, SORT_ORDER);
         if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
             //所有的图片
             List<PhotoFile> mAllFileData = new ArrayList<>();

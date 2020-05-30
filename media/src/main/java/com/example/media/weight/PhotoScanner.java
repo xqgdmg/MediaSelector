@@ -17,7 +17,7 @@ import java.io.File;
  * @author ：
  */
 
-public class MediaScanner implements MediaScannerConnection.MediaScannerConnectionClient {
+public class PhotoScanner implements MediaScannerConnection.MediaScannerConnectionClient {
 
     private MediaScannerConnection mMSC;
     private File mImageFile;
@@ -32,7 +32,7 @@ public class MediaScanner implements MediaScannerConnection.MediaScannerConnecti
         mMSC.disconnect();
     }
 
-    public MediaScanner(Context context, File file) {
+    public PhotoScanner(Context context, File file) {
         this.mImageFile = file;
         if (mMSC == null) {
             mMSC = new MediaScannerConnection(context, this);
