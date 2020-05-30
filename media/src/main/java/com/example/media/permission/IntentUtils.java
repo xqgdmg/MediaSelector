@@ -7,17 +7,6 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-/**
- * 项  目 :  YZBProject
- * 包  名 :  com.henji.yunyi.yizhibang.utils
- * 类  名 :  IntentUtils
- * 作  者 :  胡庆岭
- * 时  间 :  2018/1/9 0009 下午 4:03
- * 描  述 :  ${TODO}意图工具类
- *
- * @author ：
- */
-
 public class IntentUtils {
     public static final int OPEN_APPLY_CENTER_CODE = 5501;
 
