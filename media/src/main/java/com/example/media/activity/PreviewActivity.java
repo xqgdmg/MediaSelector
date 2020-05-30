@@ -63,6 +63,7 @@ public class PreviewActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_preview);
         init();
     }
 
@@ -276,11 +277,6 @@ public class PreviewActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_preview;
-    }
-
     private void titleViewAnimation() {
         ObjectAnimator topAnimatorTranslation;
         ObjectAnimator bottomAnimatorTranslation;
@@ -342,6 +338,18 @@ public class PreviewActivity extends BaseActivity {
                 break;
             default:
                 break;
+        }
+    }
+
+    protected void registerEventBus() {
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    protected void unRegisterEventBus() {
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
         }
     }
 }

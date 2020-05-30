@@ -38,6 +38,7 @@ import com.example.media.weight.DialogHelper;
 import com.example.media.weight.FolderWindow;
 import com.example.media.weight.Toasts;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -61,15 +62,10 @@ public class MediaActivity extends BaseActivity {
     private File mCameraFile;
     private AlertDialog mCameraPermissionDialog;
 
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_media;
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_media);
         requestExternalStoragePermission();
     }
 
@@ -444,6 +440,18 @@ public class MediaActivity extends BaseActivity {
                 }
                 break;
 
+        }
+    }
+
+    protected void registerEventBus() {
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    protected void unRegisterEventBus() {
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
         }
     }
 
