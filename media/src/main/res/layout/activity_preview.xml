@@ -33,45 +33,4 @@
             android:text="完成" />
     </LinearLayout>
 
-
-    <LinearLayout
-        android:id="@+id/ll_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorA0000000"
-        android:orientation="vertical">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_check_media"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#50E1E1E1" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp">
-            <TextView
-                android:id="@+id/tv_back_bottom"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
-                android:textColor="#ffffff"
-                android:background="#55ff0000"
-                android:textSize="14sp"
-                android:text="返回" />
-            <TextView
-                android:id="@+id/tv_select"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
-                android:background="#5500ff00"
-                android:textColor="#ffffff"
-                android:textSize="14sp"
-                android:text="选择" />
-        </LinearLayout>
-    </LinearLayout>
-
 </RelativeLayout>

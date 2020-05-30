@@ -1,32 +1,17 @@
 package com.example.media.activity;
 
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.LinearInterpolator;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.media.MediaSelector;
-import com.example.media.OnRecyclerItemClickListener;
 import com.example.media.R;
-import com.example.media.adapter.MediaCheckAdapter;
 import com.example.media.adapter.PreviewAdapter;
 import com.example.media.bean.MediaSelectorFile;
 import com.example.media.permission.PermissionActivity;
@@ -43,21 +28,20 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
 public class PreviewActivity extends PermissionActivity {
 
     private PreviewViewPager mVpPreview;
-    private TextView tv_select;
-    private TextView tv_back_bottom;
     private TextView tv_back;
     private TextView tv_finish;
     private List<MediaSelectorFile> mMediaFileData;
     private PreviewAdapter mPreviewAdapter;
     private boolean isShowTitleView = true;
     private int mPreviewPosition;
-    private RecyclerView mRvCheckMedia;
     private View mLlBottom;
     private List<MediaSelectorFile> mCheckMediaData;
-    private MediaCheckAdapter mCheckAdapter;
     private AnimatorSet mAnimatorSet;
     private MediaSelector.MediaOptions mOptions;
 
@@ -83,10 +67,6 @@ public class PreviewActivity extends PermissionActivity {
         mVpPreview.setLayoutParams(layoutParams);
         tv_finish = findViewById(R.id.tv_finish);
         tv_back = findViewById(R.id.tv_back);
-        mRvCheckMedia = findViewById(R.id.rv_check_media);
-        mRvCheckMedia.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-        tv_back_bottom = findViewById(R.id.tv_back_bottom);
-        tv_select = findViewById(R.id.tv_select);
         mLlBottom = findViewById(R.id.ll_bottom);
     }
 
@@ -116,17 +96,12 @@ public class PreviewActivity extends PermissionActivity {
                 }
             }
         }
-        tv_back.setText(getString(R.string.count_sum_count, String.valueOf(mPreviewPosition + 1), String.valueOf(mMediaFileData.size())));
         setTitleViewSureText();
-        tv_select.setCompoundDrawablesWithIntrinsicBounds(mMediaFileData.get(mPreviewPosition).isCheck ? R.mipmap.icon_preview_check : R.mipmap.icon_preview_uncheck, 0, 0, 0);
         mPreviewAdapter = new PreviewAdapter(mMediaFileData);
         mVpPreview.setAdapter(mPreviewAdapter);
         mVpPreview.setCurrentItem(mPreviewPosition, true);
         mVpPreview.setPageTransformer(true, new PreviewAdapter.PreviewPageTransformer());
 
-        mCheckAdapter = new MediaCheckAdapter(this, mCheckMediaData);
-        mRvCheckMedia.setAdapter(mCheckAdapter);
-        mCheckAdapter.notifyCheckData(mMediaFileData.get(mPreviewPosition));
         initAdapterEvent();
     }
 
@@ -139,28 +114,6 @@ public class PreviewActivity extends PermissionActivity {
     }
 
     private void initAdapterEvent() {
-        mVpPreview.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-                mPreviewPosition = i;
-                tv_back.setText(getString(R.string.count_sum_count, String.valueOf(i + 1), String.valueOf(mMediaFileData.size())));
-                tv_select.setCompoundDrawablesWithIntrinsicBounds(mMediaFileData.get(i).isCheck ? R.mipmap.icon_preview_check : R.mipmap.icon_preview_uncheck, 0, 0, 0);
-                mCheckAdapter.notifyCheckData(mMediaFileData.get(mPreviewPosition));
-                if (mCheckMediaData.contains(mMediaFileData.get(mPreviewPosition))) {
-                    mRvCheckMedia.scrollToPosition(mCheckMediaData.indexOf(mMediaFileData.get(mPreviewPosition)));
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
         mPreviewAdapter.setOnPreviewViewClickListener(new PreviewAdapter.OnPreviewViewClickListener() {
             @Override
             public void onPreviewView(View view) {
@@ -178,46 +131,10 @@ public class PreviewActivity extends PermissionActivity {
                 startActivityForResult(intent, Contast.CODE_REQUEST_PRIVIEW_VIDEO);
             }
         });
-        mCheckAdapter.setOnRecyclerItemClickListener(new OnRecyclerItemClickListener() {
-            @Override
-            public void itemClick(@NonNull View view, int position) {
-                if (mMediaFileData.contains(mCheckMediaData.get(position))) {
-                    mVpPreview.setCurrentItem(mMediaFileData.indexOf(mCheckMediaData.get(position)), true);
-                    mCheckAdapter.notifyDataSetChanged();
-                }
-
-            }
-        });
     }
 
     protected void initEvent() {
 
-        tv_select.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mCheckMediaData.size() < mOptions.maxChooseMedia || (mCheckMediaData.size() == mOptions.maxChooseMedia && mMediaFileData.get(mPreviewPosition).isCheck)) {
-                    mMediaFileData.get(mPreviewPosition).isCheck = !mMediaFileData.get(mPreviewPosition).isCheck;
-                    tv_select.setCompoundDrawablesWithIntrinsicBounds(mMediaFileData.get(mPreviewPosition).isCheck ? R.mipmap.icon_preview_check : R.mipmap.icon_preview_uncheck, 0, 0, 0);
-                    EventBus.getDefault().post(mMediaFileData.get(mPreviewPosition));
-                    if (mCheckAdapter != null) {
-                        if (mMediaFileData.get(mPreviewPosition).isCheck) {
-                            mCheckAdapter.addItemNotifyData(mMediaFileData.get(mPreviewPosition));
-                            mRvCheckMedia.scrollToPosition(mCheckMediaData.indexOf(mMediaFileData.get(mPreviewPosition)));
-
-                        } else {
-                            if (mCheckMediaData.contains(mMediaFileData.get(mPreviewPosition))) {
-                                mCheckAdapter.removeItemNotifyData(mCheckMediaData.indexOf(mMediaFileData.get(mPreviewPosition)));
-                                mRvCheckMedia.scrollToPosition(mCheckMediaData.size() - 1);
-                            }
-                        }
-                    }
-                    //设置完成的数量
-                    setTitleViewSureText();
-                } else {
-                    Toasts.with().showToast(PreviewActivity.this, R.string.max_choose_media, String.valueOf(mOptions.maxChooseMedia));
-                }
-            }
-        });
         tv_finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -314,15 +231,4 @@ public class PreviewActivity extends PermissionActivity {
         }
     }
 
-    protected void registerEventBus() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-    }
-
-    protected void unRegisterEventBus() {
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
-    }
 }
