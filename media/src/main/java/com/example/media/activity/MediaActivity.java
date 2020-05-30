@@ -29,6 +29,7 @@ import com.example.media.R;
 import com.example.media.adapter.MediaFileAdapter;
 import com.example.media.bean.MediaSelectorFile;
 import com.example.media.bean.MediaSelectorFolder;
+import com.example.media.permission.PermissionActivity;
 import com.example.media.permission.imp.OnPermissionsResult;
 import com.example.media.resolver.Contast;
 import com.example.media.resolver.ILoadMediaResult;
@@ -48,7 +49,7 @@ import java.util.List;
 
 import utils.task.CompressImageTask;
 
-public class MediaActivity extends BaseActivity {
+public class MediaActivity extends PermissionActivity {
 
     private TitleView mTvTop;
     private TitleView mTvBottom;
@@ -102,7 +103,7 @@ public class MediaActivity extends BaseActivity {
 
             @Override
             public void onForbid(List<String> list) {
-                showForbidPermissionDialog();
+                Toast.makeText(MediaActivity.this,"permission deny",Toast.LENGTH_SHORT).show();
             }
         }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
@@ -316,7 +317,7 @@ public class MediaActivity extends BaseActivity {
             @Override
             public void onForbid(List<String> list) {
 
-                showForbidPermissionDialog();
+                Toast.makeText(MediaActivity.this,"permission deny",Toast.LENGTH_SHORT).show();
 
             }
         }, Manifest.permission.CAMERA);

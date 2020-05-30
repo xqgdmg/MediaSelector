@@ -29,6 +29,7 @@ import com.example.media.R;
 import com.example.media.adapter.MediaCheckAdapter;
 import com.example.media.adapter.PreviewAdapter;
 import com.example.media.bean.MediaSelectorFile;
+import com.example.media.permission.PermissionActivity;
 import com.example.media.resolver.Contast;
 import com.example.media.utils.FileUtils;
 import com.example.media.utils.ScreenUtils;
@@ -44,7 +45,7 @@ import java.util.List;
 
 import utils.task.CompressImageTask;
 
-public class PreviewActivity extends BaseActivity {
+public class PreviewActivity extends PermissionActivity {
 
     private PreviewViewPager mVpPreview;
     private TitleView mTvTop;
