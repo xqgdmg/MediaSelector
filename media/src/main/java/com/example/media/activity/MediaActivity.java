@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -66,18 +68,23 @@ public class MediaActivity extends BaseActivity {
     }
 
     @Override
-    protected void initPermission() {
-
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         requestExternalStoragePermission();
-
-
     }
+
+    private void init() {
+        initView();
+        initData();
+        initEvent();
+    }
+
 
     private void requestExternalStoragePermission() {
         requestPermission(new OnPermissionsResult() {
             @Override
             public void onAllow(List<String> list) {
-                MediaActivity.super.initPermission();
+                init();
             }
 
             @Override
@@ -143,7 +150,6 @@ public class MediaActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @Override
     protected void initView() {
         registerEventBus();
         mTvTop = findViewById(R.id.ctv_top);
@@ -152,7 +158,6 @@ public class MediaActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
     }
 
-    @Override
     protected void initData() {
         initIntent();
         MediaHelper mediaHelper = new MediaHelper(this);
@@ -216,7 +221,6 @@ public class MediaActivity extends BaseActivity {
         finish();
     }
 
-    @Override
     protected void initEvent() {
         mTvTop.setOnSureViewClickListener(new TitleView.OnSureViewClickListener() {
             @Override

@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +61,17 @@ public class PreviewActivity extends BaseActivity {
     private MediaSelector.MediaOptions mOptions;
 
     @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        init();
+    }
+
+    private void init() {
+        initView();
+        initData();
+        initEvent();
+    }
+
     protected void initView() {
 
         mVpPreview = findViewById(R.id.vp_preview);
@@ -73,7 +86,6 @@ public class PreviewActivity extends BaseActivity {
         mLlBottom = findViewById(R.id.ll_bottom);
     }
 
-    @Override
     protected void initData() {
         Intent intent = getIntent();
         mCheckMediaData = intent.getParcelableArrayListExtra(Contast.KEY_PREVIEW_CHECK_MEDIA);
@@ -176,7 +188,6 @@ public class PreviewActivity extends BaseActivity {
         });
     }
 
-    @Override
     protected void initEvent() {
 
         mTvBottom.setOnSureViewClickListener(new TitleView.OnSureViewClickListener() {

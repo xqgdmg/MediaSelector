@@ -14,21 +14,9 @@ public abstract class BaseActivity extends PermissionActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
-        initPermission();
 
     }
 
-    protected void initPermission() {
-        initView();
-        initData();
-        initEvent();
-    }
-
-    protected abstract void initView();
-
-    protected abstract void initData();
-
-    protected abstract void initEvent();
 
     protected abstract int getLayoutId();
 
