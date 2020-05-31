@@ -1,4 +1,4 @@
-package com.hu.xiaobai.photoselector.crop;
+package com.example.media.crop;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -25,7 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
-import com.hu.xiaobai.photoselector.R;
+
+import com.example.media.R;
 
 import java.io.FileDescriptor;
 import java.io.InputStream;

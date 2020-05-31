@@ -10,6 +10,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
+        <activity android:name=".crop.PhotoCropActivity"/>
+
+        <activity android:name=".crop.ClipResultActivity"/>
+
         <provider
             android:name=".provider.MediaProvider"
             android:authorities="${applicationId}.provider"

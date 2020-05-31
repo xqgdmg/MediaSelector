@@ -1,4 +1,4 @@
-package com.hu.xiaobai.photoselector.crop;
+package com.example.media.crop;
 
 import android.graphics.Bitmap;
 

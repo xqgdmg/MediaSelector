@@ -1,10 +1,11 @@
-package com.hu.xiaobai.photoselector.crop;
+package com.example.media.crop;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.hu.xiaobai.photoselector.R;
+
+import com.example.media.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 

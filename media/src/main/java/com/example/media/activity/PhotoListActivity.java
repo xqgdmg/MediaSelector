@@ -27,6 +27,7 @@ import com.example.media.R;
 import com.example.media.adapter.PhotoListAdapter;
 import com.example.media.bean.PhotoFile;
 import com.example.media.bean.PhotoFolder;
+import com.example.media.crop.PhotoCropActivity;
 import com.example.media.permission.PermissionActivity;
 import com.example.media.permission.imp.OnPermissionsResult;
 import com.example.media.resolver.Contast;
@@ -311,7 +312,7 @@ public class PhotoListActivity extends PermissionActivity {
     private void sureData() {
         if (mOptions.isCrop && mOptions.maxChooseMedia == 1) {
             if (!mSelectPhotoList.get(0).isVideo) {// not video
-                UCrop.Options options = new UCrop.Options();
+                /*UCrop.Options options = new UCrop.Options();
                 options.setCompressionQuality(100);
                 options.setToolbarColor(ContextCompat.getColor(this, mOptions.themeColor));
                 options.setStatusBarColor(ContextCompat.getColor(this, mOptions.themeColor));
@@ -321,7 +322,10 @@ public class PhotoListActivity extends PermissionActivity {
                         .withAspectRatio(mOptions.scaleX, mOptions.scaleY)
                         .withMaxResultSize(mOptions.cropWidth, mOptions.cropHeight)
                         .withOptions(options)
-                        .start(this);
+                        .start(this);*/
+                Intent intent = new Intent(PhotoListActivity.this, PhotoCropActivity.class);
+                intent.putExtra("path", mSelectPhotoList.get(0).filePath);
+                startActivity(intent);
             } else {
                 Toasts.with().showToast(this, R.string.video_not_crop);
             }
