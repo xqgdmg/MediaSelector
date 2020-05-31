@@ -37,7 +37,6 @@ import com.example.media.utils.FileUtils;
 import com.example.media.weight.DialogHelper;
 import com.example.media.weight.FolderWindow;
 import com.example.media.weight.Toasts;
-import com.yalantis.ucrop.UCrop;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -385,30 +384,7 @@ public class PhotoListActivity extends PermissionActivity {
                         resultMediaData();
                     }
 
-                }else if (requestCode == UCrop.REQUEST_CROP) {//crop ok
-                    if (data == null) {
-                        return;
-                    }
-                    final Uri resultUri = UCrop.getOutput(data);
-                    if (resultUri != null && resultUri.getPath() != null) {
-                        mSelectPhotoList.clear();
-                        File file = new File(resultUri.getPath());
-                        if (FileUtils.existsFile(file.getAbsolutePath())) {
-                            mSelectPhotoList.add(PhotoFile.checkFileToThis(file));
-                            resultIntent();
-                            finish();
-                        } else {
-                            Toasts.with().showToast(this, R.string.file_not_exit, Toast.LENGTH_SHORT);
-                        }
-                    }
-
                 }
-                break;
-            case UCrop.RESULT_ERROR://crop error
-                if (requestCode == UCrop.REQUEST_CROP) {
-                    Toasts.with().showToast(this, R.string.crop_image_fail);
-                }
-                break;
             default:
                 break;
         }
