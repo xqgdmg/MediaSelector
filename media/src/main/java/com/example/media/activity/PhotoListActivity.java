@@ -310,7 +310,7 @@ public class PhotoListActivity extends PermissionActivity {
     // 跳转裁剪
     private void sureData() {
         if (mOptions.isCrop && mOptions.maxChooseMedia == 1) {
-            if (!mSelectPhotoList.get(0).isVideo) {
+            if (!mSelectPhotoList.get(0).isVideo) {// not video
                 UCrop.Options options = new UCrop.Options();
                 options.setCompressionQuality(100);
                 options.setToolbarColor(ContextCompat.getColor(this, mOptions.themeColor));
