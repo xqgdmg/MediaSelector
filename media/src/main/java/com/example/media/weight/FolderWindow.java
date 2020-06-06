@@ -81,7 +81,7 @@ public class FolderWindow {
     private void createWindows() {
         if (mPopupWindow == null) {
             mPopupWindow = new PopupWindow(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mPopupWindow.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.color80000000)));
+            mPopupWindow.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(mContext, R.color.color55ff0000)));
             mPopupWindow.setClippingEnabled(false);
             //mPopupWindow.setOutsideTouchable(true);
             @SuppressLint("InflateParams")
@@ -101,7 +101,7 @@ public class FolderWindow {
 
     public void showWindows(@NonNull View view) {
         this.mShowView = view;
-        mPopupWindow.showAtLocation(view, Gravity.BOTTOM, 0, ScreenUtils.dp2px(view.getContext(), Contast.DEFAULT_VIEW_HEIGHT));
+        mPopupWindow.showAsDropDown(view);
         windowAnimation(true);
     }
 
@@ -113,9 +113,13 @@ public class FolderWindow {
     private void windowAnimation(final boolean isOpen) {
         ObjectAnimator objectAnimator;
         if (isOpen) {
-            objectAnimator = ObjectAnimator.ofFloat(mViewRoot, "translationY", (ScreenUtils.screenHeight(mContext) - ScreenUtils.dp2px(mContext, mShowView.getHeight())), 0);
+            objectAnimator = ObjectAnimator.ofFloat(mViewRoot, "translationY",
+                    -((ScreenUtils.screenHeight(mContext)) -  ScreenUtils.dp2px(mContext, mShowView.getHeight()))
+                    , 0);
         } else {
-            objectAnimator = ObjectAnimator.ofFloat(mViewRoot, "translationY", 0, (ScreenUtils.screenHeight(mContext) - ScreenUtils.dp2px(mContext, mShowView.getHeight())));
+            objectAnimator = ObjectAnimator.ofFloat(mViewRoot, "translationY",0,
+                    -((ScreenUtils.screenHeight(mContext)) -  ScreenUtils.dp2px(mContext, mShowView.getHeight()))
+            );
         }
         objectAnimator.setInterpolator(new LinearInterpolator());
         objectAnimator.setDuration(600);

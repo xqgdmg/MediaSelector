@@ -59,6 +59,7 @@ public class PhotoListActivity extends PermissionActivity {
     private AlertDialog mCameraPermissionDialog;
     private TextView tv_back;
     private TextView tv_all;
+    private TextView tv_show;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -141,6 +142,7 @@ public class PhotoListActivity extends PermissionActivity {
     protected void initView() {
         tv_back = findViewById(R.id.tv_back);
         tv_all = findViewById(R.id.tv_all);
+        tv_show = findViewById(R.id.tv_show);
         mRecyclerView = findViewById(R.id.ry_data);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
     }
@@ -208,7 +210,7 @@ public class PhotoListActivity extends PermissionActivity {
                 finish();
             }
         });
-        tv_all.setOnClickListener(new View.OnClickListener() {
+        tv_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showPhotoFolderWindows(view);
