@@ -145,6 +145,7 @@ public class PhotoListActivity extends PermissionActivity {
         tv_show = findViewById(R.id.tv_show);
         mRecyclerView = findViewById(R.id.ry_data);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        mRecyclerView.addItemDecoration(new DividerGridItemDecoration(PhotoListActivity.this));
     }
 
     protected void initData() {

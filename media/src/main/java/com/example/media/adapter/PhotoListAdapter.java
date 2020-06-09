@@ -131,11 +131,11 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
 
     private static void setRootGroupParams(@NonNull ViewGroup viewGroup) {
         ViewGroup.LayoutParams mGroupParams = viewGroup.getLayoutParams();
-        mGroupParams.width = viewGroup.getContext().getResources().getDisplayMetrics().widthPixels / 4;
-        mGroupParams.height = viewGroup.getContext().getResources().getDisplayMetrics().widthPixels / 4;
+        mGroupParams.width = (viewGroup.getContext().getResources().getDisplayMetrics().widthPixels-90) / 4;
+        mGroupParams.height = (viewGroup.getContext().getResources().getDisplayMetrics().widthPixels-90) / 4;
         viewGroup.setLayoutParams(mGroupParams);
-        viewGroup.setPadding(ScreenUtils.dp2px(viewGroup.getContext(), 1.5f), ScreenUtils.dp2px(viewGroup.getContext(), 1.5f),
-                ScreenUtils.dp2px(viewGroup.getContext(), 1.5f), ScreenUtils.dp2px(viewGroup.getContext(), 1.5f));
+//        viewGroup.setPadding(ScreenUtils.dp2px(viewGroup.getContext(), 11.5f), ScreenUtils.dp2px(viewGroup.getContext(), 11.5f),
+//                ScreenUtils.dp2px(viewGroup.getContext(), 11.5f), ScreenUtils.dp2px(viewGroup.getContext(), 11.5f));
     }
 
     public interface OnCheckMediaListener {
